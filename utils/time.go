@@ -10,38 +10,82 @@ import (
 	"time"
 )
 
-// ***************************日期转换start***************************
-//获取当前时间前一天的时间戳
-func GetPreDayUnix() int64 {
-	var cstZone = time.FixedZone("CST", 8*3600)
-	prevDay := time.Now().In(cstZone).AddDate(0, 0, -1)
-	return prevDay.Unix()
+var cstZone = time.FixedZone("CST", 8*3600)
+
+// ***************************日期比较start***************************
+// 传入两个字符串类型的日期,格式可以是YYYYMMDD、YYYYMMDD HH:mm:ss、YYYY-MM-DD、YYYY/MM/DD之一
+// 不论是什么格式，t1和t2两者格式必须相同
+// 返回： res=0则表示t1=t2,res=1则表示t1>t2,res=2则表示t2>t1;res=-1表示t1和t2格式不同不能作比较。
+func CompareTwoStrTime(t1, t2 string) int {
+	if len(t1) != len(t2) {
+		return -1
+	}
+
+	t1, t2 = RemoveX(t1, ` `), RemoveX(t2, ` `)
+	count := len(t1)
+	for i := 0; i < count; i++ {
+		if t1[i] == t2[i] {
+			continue
+		}
+		if !IsNum(string(t1[i])) || !IsNum(string(t2[i])) {
+			continue
+		}
+		n1, _ := strconv.Atoi(string(t1[i]))
+		n2, _ := strconv.Atoi(string(t2[i]))
+		if n1 > n2 {
+			return 1
+		} else {
+			return 2
+		}
+	}
+
+	return 0
 }
 
-// 时间戳转日期字符串，具体到天数2020-09-03
-func Unix2TimeDayRoughStr(timeStamp int64) string {
-	var cstZone = time.FixedZone("CST", 8*3600)
+// ***************************日期转换-->当日start***************************
+// 获取当前时间前一天的秒级时间戳
+func GetPreDayTimeStamp() int64 {
+	return time.Now().In(cstZone).AddDate(0, 0, -1).Unix()
+}
+
+// 时间戳转对应日期字符串 返回格式2020-09-03
+func GetTimeStrOfDayByTs(timeStamp int64) string {
 	curTm := time.Unix(timeStamp, 0)
-	dayStr := curTm.In(cstZone).Format("2006-01-02")
-	return dayStr
+	return curTm.In(cstZone).Format("2006-01-02")
 }
 
-// 时间戳转对应日的零时时间2020-09-03 00:00:00
-func Unix2TimeDayZeroStr(timeStamp int64) string {
-	var cstZone = time.FixedZone("CST", 8*3600)
-	curTime := time.Unix(timeStamp, 0)
-	//nextTime := curTime.In(cstZone).AddDate(0, 0, 1)
-	dayStr := curTime.In(cstZone).Format("2006-01-02") + " 00:00:00"
-	return dayStr
+// 时间戳转对应日期零时字符串 返回格式2020-09-03 00:00:00
+func GetTimeStrOfDayZeroByTs(timeStamp int64) string {
+	curTm := time.Unix(timeStamp, 0)
+	return curTm.In(cstZone).Format("2006-01-02") + " 00:00:00"
 }
 
-// 时间戳转对应日的实际时间2020-09-03 11:31:59
-func Unix2TimeStr(timeStamp int64) string {
-	var cstZone = time.FixedZone("CST", 8*3600)
-	curTime := time.Unix(timeStamp, 0)
-	//nextTime := curTime.In(cstZone).AddDate(0, 0, 1)
-	dayStr := curTime.In(cstZone).Format("2006-01-02 15:04:05")
-	return dayStr
+// 时间戳转对应日期的实际时间 返回格式2020-09-03 11:31:59
+func GetTimeStrOfDayTimeByTs(timeStamp int64) string {
+	curTm := time.Unix(timeStamp, 0)
+	return curTm.In(cstZone).Format("2006-01-02 15:04:05")
+}
+
+// ***************************日期转换-->前一日start***************************
+// 时间戳转前一日日期的实际时间 返回格式2020-09-03 11:31:59
+func GetTimeStrOfBeforeDayByTs(timeStamp int64) string {
+	curTm := time.Unix(timeStamp, 0)
+	beforeDayTime := curTm.In(cstZone).AddDate(0, 0, -1)
+	return beforeDayTime.In(cstZone).Format("2006-01-02")
+}
+
+// 时间戳转前一日日期的零时时间 返回格式2020-09-03 00:00:00
+func GetTimeStrOfBeforeDayZeroByTs(timeStamp int64) string {
+	curTm := time.Unix(timeStamp, 0)
+	beforeDayTime := curTm.In(cstZone).AddDate(0, 0, -1)
+	return beforeDayTime.In(cstZone).Format("2006-01-02") + " 00:00:00"
+}
+
+// 时间戳转前一日日期的实际时间 返回格式2020-09-03 11:31:59
+func GetTimeStrOfBeforeDayTimeByTs(timeStamp int64) string {
+	curTm := time.Unix(timeStamp, 0)
+	beforeDayTime := curTm.In(cstZone).AddDate(0, 0, -1)
+	return beforeDayTime.In(cstZone).Format("2006-01-02 15:04:05")
 }
 
 // ***************************日期获取&判断start***************************

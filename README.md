@@ -6,6 +6,11 @@
 
 -->欢迎提出问题或建议，作者会不断改进；欢迎Star
 
+go get -u github.com/jialanli/lacia
+或cd ~/go/src/github.com下 
+
+git clone https://github.com/jialanli/lacia.git
+
 ## 内容介绍
 
 eg: 需要按多个分隔符切割字符串
