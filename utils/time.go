@@ -11,6 +11,12 @@ import (
 )
 
 // ***************************日期转换start***************************
+//获取当前时间前一天的时间戳
+func GetPreDayUnix() int64 {
+	var cstZone = time.FixedZone("CST", 8*3600)
+	prevDay := time.Now().In(cstZone).AddDate(0, 0, -1)
+	return prevDay.Unix()
+}
 
 // 时间戳转日期字符串，具体到天数2020-09-03
 func Unix2TimeDayRoughStr(timeStamp int64) string {

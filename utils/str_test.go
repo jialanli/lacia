@@ -38,3 +38,23 @@ func TestDeletePreAndSufSpace(t *testing.T) {
 	fmt.Println("s3原：", s3)               //
 	fmt.Println(DeletePreAndSufSpace(s3)) //
 }
+
+func TestVersionGreaterThanT(t *testing.T) {
+	flag := VersionGreaterThanT("1.19.2", "1.3.1")
+	fmt.Println(flag)
+	flag1 := VersionGreaterThanT("v1.1", "v1.7")
+	fmt.Println(flag1)
+	flag2 := VersionGreaterThanT("abc.1.11", "abc.1.12")
+	fmt.Println(flag2)
+	flag4 := VersionGreaterThanT("v.1.b.6", "v.1.b.5")
+	fmt.Println(flag4)
+	flag5 := VersionGreaterThanT("v.1.b.5", "v.1.a.6")
+	fmt.Println(flag5)
+}
+
+func TestSplitByManyStrWith(t *testing.T) {
+	fmt.Println(SplitByManyStrWith("ab+c*de+f/gh", []string{`*`, `+`, `/`}))    // [ab c de f gh]
+	fmt.Println(SplitByManyStrWith("a%%b&c&d%h+fg-h", []string{`&`, `%`, `-`})) // [a b c d h+fg h]
+	fmt.Println(SplitByManyStr("a%%b&c&d%h+fg-h")) // [a b c d h fg h]
+	fmt.Println(SplitByManyStr("a}b&cc&d%h+fg_h")) // [a b cc d h fg h]
+}
