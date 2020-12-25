@@ -13,14 +13,14 @@ func SwapValString(x, y *string) {
 }
 
 // rate = a-b/b
-func CalcPercentInt64(src, dst int64) float64 {
+func CalcRateInt64(src, dst int64) float64 {
 	if dst == 0 {
 		return -1
 	}
 	return float64(src-dst) / float64(dst)
 }
 
-func CalcPercentFloat64(src, dst float64) float64 {
+func CalcRateFloat64(src, dst float64) float64 {
 	if int(dst) == 0 {
 		return -1
 	}

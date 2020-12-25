@@ -3,8 +3,8 @@ package lacia
 import "fmt"
 
 // 获取类型  --sample
-func GetValType(t interface{}) string {
-	switch cond := t.(type) {
+func GetValTypeOfSample(t interface{}) string {
+	switch t.(type) {
 	case func():
 		return "func"
 	case bool:
@@ -26,7 +26,6 @@ func GetValType(t interface{}) string {
 	case []int32:
 		return "[]int32"
 	default:
-		_ = cond
 		return "unknown"
 	}
 }

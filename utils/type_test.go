@@ -50,3 +50,9 @@ func FuncTest(string2 string, int2 int) (res []int, err error) {
 type StructTest struct {
 	Name string
 }
+
+func TestGetValTypeOfSample(t *testing.T) {
+	var flag bool
+	res := GetValTypeOfSample(flag)
+	fmt.Println(res)
+}

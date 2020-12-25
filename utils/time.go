@@ -88,10 +88,8 @@ func GetTimeStrOfBeforeDayTimeByTs(timeStamp int64) string {
 	return beforeDayTime.In(cstZone).Format("2006-01-02 15:04:05")
 }
 
-// ***************************日期获取&判断start***************************
-/*
-	给定年月(YYYYMM),获取该月有多少天
-*/
+// ***************************日期获取&计算start***************************
+//给定年月(YYYYMM),获取该月有多少天
 func GetDaysInMonth(yearInt, month int) (days int) {
 	switch month {
 	case 1, 3, 5, 7, 8, 10, 12:
@@ -112,11 +110,13 @@ func GetDaysInMonth(yearInt, month int) (days int) {
 	return 31
 }
 
-// 日结无顺延,入参示例：202007，202008  或只传一个月：startT=endT=202006
-func GetAllDaysByMonths(startT, endT string) []string {
-	preStr := startT[:4]         // 2020
-	startMonthStr := startT[4:6] // 06
-	endMonthStr := endT[4:6]     // 07
+// 给定两个月份，获取期间的所有天粒度的字符串列表
+// ifDelayOneDay为是否取延迟一天的标志位，ifDelayOneDay=true，则获取的天粒度数据全部往后推迟一天
+// 入参示例：202007 202008;或只传一个月：startT=endT=202006;返回示例请查看对应单元测试TestGetAllDaysDelayOneDayByMonths
+func GetAllDaysDelayOneDayByMonths(startMonthT, endMonthT string, ifDelayOneDay bool) []string {
+	preStr := startMonthT[:4]         // 2020
+	startMonthStr := startMonthT[4:6] // 06
+	endMonthStr := endMonthT[4:6]     // 07
 	yearInt, _ := strconv.Atoi(preStr)
 	startMonthInt, _ := strconv.Atoi(startMonthStr)
 	endMonthInt, _ := strconv.Atoi(endMonthStr)
@@ -128,15 +128,15 @@ func GetAllDaysByMonths(startT, endT string) []string {
 		currentMonthDays = GetDaysInMonth(yearInt, endMonthInt)
 		startStr, endStr = preStr+startMonthStr+"01", preStr+endMonthStr+strconv.Itoa(currentMonthDays)
 	}
-	fmt.Println("转换后的8位str：", startStr, endStr)
-	return GetInputTimes(startStr, endStr)
+	return GetTimeListByTwoDayStr(startStr, endStr, ifDelayOneDay)
 }
 
-// 本函数用于执行后付费查询
-// eg:想获取20200807、20200808、20200809三天的数据，输入20200807 20200809，则返回为[]string{20200808,20200809,20200810}
-// eg:想获取20200730、20200731、20200801三天的数据，输入20200730 20200801，则返回为[]string{20200731,20200801,20200802}
-// eg:想获取2020年6月、2020年7月 两月的数据，输入202007 202008，则返回为[]string{202008,202009}
-func GetInputTimes(startT, endT string) (timeList []string) {
+// 给定一个时间区间，根据传入的时间精确到月/天，用于获取该区间内所有的天粒度/月粒度的时间字符串列表
+// ifDelayOneDay为是否取延迟一天的标志位，ifDelayOneDay=true，则获取的天粒度数据全部往后推迟一天
+// eg:想获取20200807、20200808、20200809三天的天粒度字符串，输入20200807 20200809，则返回为[]string{20200808,20200809,20200810}
+// eg:想获取20200730、20200731、20200801三天的天粒度字符串，输入20200730 20200801，则返回为[]string{20200731,20200801,20200802}
+// eg:想获取2020年6月、2020年7月 两月的月粒度字符串，输入202007 202008，则返回为[]string{202008,202009}
+func GetTimeListByTwoDayStr(startT, endT string, ifDelayOneDay bool) (timeList []string) {
 	/*
 		count=8,精确到天;
 		count=6,精确到月;
@@ -154,10 +154,13 @@ func GetInputTimes(startT, endT string) (timeList []string) {
 		yearInt, _ := strconv.Atoi(preStr)
 		startMonthInt, _ := strconv.Atoi(startMonthStr)
 		endMonthInt, _ := strconv.Atoi(endMonthStr)
-		startDayInt, _ := strconv.Atoi(startDayStr)                  // 07
-		endDayInt, _ := strconv.Atoi(endDayStr)                      // 09
-		dayAdd, monthAdd, dayStr := startDayInt+1, startMonthInt, "" // 如需天数顺延一天，则dayAdd = startDayInt + 1 即可
-		listLen := GetDaysNumByTwoDays(yearInt, startMonthInt, endMonthInt, startDayInt, endDayInt)
+		startDayInt, _ := strconv.Atoi(startDayStr)                // 07
+		endDayInt, _ := strconv.Atoi(endDayStr)                    // 09
+		dayAdd, monthAdd, dayStr := startDayInt, startMonthInt, "" // 如需天数顺延一天，则dayAdd = startDayInt + 1 即可
+		if ifDelayOneDay {
+			dayAdd = dayAdd + 1
+		}
+		listLen := GetDaysNumByTwoDays(yearInt, startMonthInt, startDayInt, endMonthInt, endDayInt)
 		for i := 0; i < listLen; {
 			monthStr := strconv.Itoa(monthAdd)
 			if dayAdd < 10 {
@@ -170,7 +173,7 @@ func GetInputTimes(startT, endT string) (timeList []string) {
 				monthAdd++
 				dayAdd = 0
 			}
-			dayAdd++ // 务必放在判断跳月之后，否则数据不准
+			dayAdd++
 			if monthAdd == endMonthInt && dayAdd == endDayInt+2 {
 				break
 			}
@@ -195,7 +198,7 @@ func GetInputTimes(startT, endT string) (timeList []string) {
 			startStr, endStr = preStr+startMonthStr+"01", preStr+endMonthStr+strconv.Itoa(currentMonthDays)
 		}
 		fmt.Println("转换后的8位str：", startStr, endStr)
-		GetInputTimes(startStr, endStr)
+		GetTimeListByTwoDayStr(startStr, endStr, ifDelayOneDay)
 		return
 	case 4:
 		fmt.Println("暂不支持以年查询！")
@@ -206,7 +209,7 @@ func GetInputTimes(startT, endT string) (timeList []string) {
 }
 
 // 输入两个YYYYMMDD日期,返回期间的天数总长度，如传入20200730，20200801，则返回3; 如传入20200630，20200801，则返回33
-func GetDaysNumByTwoDays(yearInt, startMonthInt, endMonthInt, startDayInt, endDayInt int) (days int) {
+func GetDaysNumByTwoDays(yearInt, startMonthInt, startDayInt, endMonthInt, endDayInt int) (days int) {
 	if startMonthInt == endMonthInt { // 当月
 		days = endDayInt - startDayInt + 1
 		return
@@ -227,10 +230,10 @@ func GetDaysNumByTwoDays(yearInt, startMonthInt, endMonthInt, startDayInt, endDa
 	return
 }
 
-// 年月inputStart[:6]  月inputStart[4:6]
-// 输入两个YYYYMMDD日期,返回期间的月份列表数组; 输入20200101 20200303 返回月份列表数组string{202001,202002,202003}
+// 给定两个YYYYMM或YYYYMMDD日期,返回期间的月份列表数组(无顺延);
+// 输入20200101 20200303 返回月份列表数组string{202001,202002,202003}
 func GetYearMonthListByTwoDay(inputStart, inputEnd string) []string {
-	year := inputStart[:4]
+	year := inputStart[:4] // 年月inputStart[:6]  月inputStart[4:6]
 	yearMon := inputStart[:6]
 	startMon := inputStart[4:6]
 	endMon := inputEnd[4:6]
@@ -256,7 +259,12 @@ func GetYearMonthListByTwoDay(inputStart, inputEnd string) []string {
 	return res
 }
 
+// 给定两个YYYYMM或YYYYMMDD日期,返回期间的月份列表数组(整体顺延一月);
 // 输入20200101 20200303 返回string{202002,202003,202004}
+// 输入20200101 20200303 返回string{202002,202003,202004}
+// 输入202008 202008 返回string{202009}
+// 输入20200705 20200708 返回string{202008}
+// 输入20200705 20200808 返回string{202008,202009}
 func GetYearMonthListByTwoDayDelayOneDay(inputStart, inputEnd string) []string {
 	year := inputStart[:4] // 2020
 	yearMon := inputStart[:6]
@@ -276,7 +284,6 @@ func GetYearMonthListByTwoDayDelayOneDay(inputStart, inputEnd string) []string {
 
 	res := []string{newYearMonthStr}
 	currMon := startMonthInt
-	//currStr := ""
 	num := endMonthInt - startMonthInt
 	for i := 0; i < num; i++ {
 		currMon = currMon + 1
@@ -302,26 +309,6 @@ func IsJumpMonth(yearInt int, monthInt int, dayAdd int) bool {
 func IsNum(s string) bool {
 	_, err := strconv.ParseFloat(s, 64)
 	return err == nil
-}
-
-func GetChBufNum(num int) int {
-	if num < 200 {
-		return num
-	}
-
-	if num > 1000 && num < 5000 {
-		return num / 5
-	}
-
-	if num > 5000 && num < 10000 {
-		return num / 10
-	}
-
-	if num > 10000 && num < 30000 {
-		return num / 20
-	}
-
-	return 1000
 }
 
 //时间转换方法：转换时间20200504为"2020-05-04 00:00:00"格式
