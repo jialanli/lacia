@@ -28,7 +28,7 @@ func TestRemoveX(t *testing.T) {
 }
 
 func TestDeletePreAndSufSpace(t *testing.T) {
-	s1 := " a  a a  "
+	s1 := "a  a a"
 	fmt.Println("s1原：", s1)               //  a  a a
 	fmt.Println(DeletePreAndSufSpace(s1)) //a  a a
 	s2 := " 和  a 和   "
@@ -55,6 +55,6 @@ func TestVersionGreaterThanT(t *testing.T) {
 func TestSplitByManyStrWith(t *testing.T) {
 	fmt.Println(SplitByManyStrWith("ab+c*de+f/gh", []string{`*`, `+`, `/`}))    // [ab c de f gh]
 	fmt.Println(SplitByManyStrWith("a%%b&c&d%h+fg-h", []string{`&`, `%`, `-`})) // [a b c d h+fg h]
-	fmt.Println(SplitByManyStr("a%%b&c&d%h+fg-h")) // [a b c d h fg h]
-	fmt.Println(SplitByManyStr("a}b&cc&d%h+fg_h")) // [a b cc d h fg h]
+	fmt.Println(SplitByManyStr("a%%b&c&d%h+fg-h"))                              // [a b c d h fg h]
+	fmt.Println(SplitByManyStr("a}b&cc&d%h+fg_h"))                              // [a b cc d h fg h]
 }

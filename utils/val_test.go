@@ -23,3 +23,15 @@ func TestSwapValString(t *testing.T) {
 	SwapValInt64(&e, &f)
 	fmt.Println(e, f)
 }
+
+type R int
+
+func TestSw(t *testing.T) {
+	a := 5
+	b := R(2)
+	fmt.Println(GetValTypeOf(a))
+	fmt.Println(GetValTypeOf(b))
+	c := a + int(b)
+	fmt.Println(c)
+
+}

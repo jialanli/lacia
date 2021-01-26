@@ -12,6 +12,13 @@ func SwapValString(x, y *string) {
 	*x, *y = *y, *x
 }
 
+func Abs(n int) int {
+	if n < 0 {
+		return -n
+	}
+	return n
+}
+
 // rate = a-b/b
 func CalcRateInt64(src, dst int64) float64 {
 	if dst == 0 {

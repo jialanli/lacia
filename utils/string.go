@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// 指定字符去除(含去除所有空格)
+// 去除字符串中所有指定字符(含去除所有空格)
 func RemoveX(str string, x string) string {
 	var res string
 	for i := 0; i < len(str); i++ {
@@ -22,24 +22,32 @@ func DeletePreAndSufSpace(str string) string {
 	strList := []byte(str)
 	spaceCount, count := 0, len(strList)
 	for i := 0; i <= len(strList)-1; i++ {
-		if strList[i] == 32 {
-			spaceCount++
-		} else {
+		if strList[i] != 32 {
 			break
 		}
+		spaceCount++
 	}
 
 	strList = strList[spaceCount:]
 	spaceCount, count = 0, len(strList)
 	for i := count - 1; i >= 0; i-- {
-		if strList[i] == 32 {
-			spaceCount++
-		} else {
+		if strList[i] != 32 {
 			break
 		}
+		spaceCount++
 	}
 
 	return string(strList[:count-spaceCount])
+}
+
+// 检查一组字符串中每个字符串的长度,只要有一个字符串的长度不为n则返回false
+func CheckEveryStringLengthIsN(strList []string, n int) bool {
+	for _, s := range strList {
+		if len(s) != n {
+			return false
+		}
+	}
+	return true // all str length equals n, return true
 }
 
 var (
@@ -48,7 +56,7 @@ var (
 )
 
 // 版本号比较
-// usages:参数1 > 参数2 的版本时，返回true  反之为false
+// eg:参数1 > 参数2 的版本时，返回true  反之为false
 func VersionGreaterThanT(a, b string) bool {
 	return GreaterThan(a, b)
 }
