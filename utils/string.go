@@ -145,12 +145,3 @@ func SplitByManyStrWith(src string, flagList []string) []string {
 		return res
 	})
 }
-
-// 按多个指定字符分割字符串,需指定的字符按常用默认的来判断
-func SplitByManyStr(src string) []string {
-	return strings.FieldsFunc(src, func(r rune) bool {
-		return r == ':' || r == '=' || r == '+' || r == '-' || r == '*' || r == '$' ||
-			r == '&' || r == '@' || r == '!' || r == '！' || r == '%' || r == '^' || r == '_' ||
-			r == '/' || r == '\\' || r == '{' || r == '}'
-	})
-}

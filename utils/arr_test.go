@@ -8,7 +8,11 @@ import (
 func TestSortArr(t *testing.T) {
 	var sortArray = []int{11, 3, 6, 25, 15, 1, 27}
 	fmt.Println("before sort:", sortArray)
-	SortArr(sortArray, "AsC")
+	SortArrAsc(sortArray)
+	fmt.Println("after sort:", sortArray)
+
+	fmt.Println("before sort:", sortArray)
+	SortArrDesc(sortArray)
 	fmt.Println("after sort:", sortArray)
 }
 

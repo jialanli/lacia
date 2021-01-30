@@ -47,5 +47,3 @@ func ReverseInt(x int) int {
 
 	return res
 }
-
-// 小数反转

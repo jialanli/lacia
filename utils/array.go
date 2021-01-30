@@ -1,46 +1,90 @@
 package lacia
 
-import "strings"
+// new many slice
+func NewSlice(valT interface{}, n int) {
+	t := GetValTypeOf(valT)
+	type sType interface{}
+	switch t {
+	case "func":
+		//sType = sType.(func())
+	case "bool":
+		//sType = bool(sType)
+	case "float64":
+		//sType = sType.(bool)
+		return
+	case "float32":
+		return
+	case "string":
+		return
+	case "[]string":
+		return
+	case "[]int":
+		return
+	case "[]int64":
+		return
+	case "[]int8":
+		return
+	case "[]int32":
+		return
+	default:
+
+	}
+	//var slist sType
+	for i := 1; i <= n; i++ {
+
+	}
+}
 
 // 排序:sortBy传空时默认按降序,传asc时按升序
-func SortArr(arr []int, sortBy string) []int {
+func SortArrAsc(arr []int) []int {
 	if len(arr) <= 1 {
 		return arr
 	}
 	base := arr[0]
 	left, right := 0, len(arr)-1
 	for i := 1; i <= right; {
-		if strings.ToUpper(sortBy) == "ASC" {
-			if arr[i] > base {
-				if i != right {
-					arr[i], arr[right] = arr[right], arr[i]
-				}
-				right--
-			} else {
-				if i != left {
-					arr[i], arr[left] = arr[left], arr[i]
-				}
-				left++
-				i++
+		if arr[i] > base {
+			if i != right {
+				arr[i], arr[right] = arr[right], arr[i]
 			}
+			right--
 		} else {
-			if arr[i] < base {
-				if i != right {
-					arr[i], arr[right] = arr[right], arr[i]
-				}
-				right--
-			} else {
-				if i != left {
-					arr[i], arr[left] = arr[left], arr[i]
-				}
-				left++
-				i++
+			if i != left {
+				arr[i], arr[left] = arr[left], arr[i]
 			}
+			left++
+			i++
 		}
 	}
 
-	SortArr(arr[:left], sortBy)
-	SortArr(arr[left+1:], sortBy)
+	SortArrAsc(arr[:left])
+	SortArrAsc(arr[left+1:])
+	return arr
+}
+
+func SortArrDesc(arr []int) []int {
+	if len(arr) <= 1 {
+		return arr
+	}
+	base := arr[0]
+	left, right := 0, len(arr)-1
+	for i := 1; i <= right; {
+		if arr[i] < base {
+			if i != right {
+				arr[i], arr[right] = arr[right], arr[i]
+			}
+			right--
+		} else {
+			if i != left {
+				arr[i], arr[left] = arr[left], arr[i]
+			}
+			left++
+			i++
+		}
+	}
+
+	SortArrDesc(arr[:left])
+	SortArrDesc(arr[left+1:])
 	return arr
 }
 

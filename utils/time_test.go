@@ -66,10 +66,6 @@ func TestGetNMonthAgoOrAfterThisDayByN1(t *testing.T) {
 
 	timeT, timeStr, err = GetNMonthAgoOrAfterThisDayByN(nil, "20211231", -13)
 	fmt.Println("20211231的13月前：", timeT, err, timeStr) // 20211231的13月前： 2020-11-30 00:00:00 +0000 UTC <nil> 20201130
-
-	timeT, timeStr, err = GetNMonthAgoOrAfterThisDayByN(nil, "20211231", -26)
-	fmt.Println("20211231的26月前：", timeT, err, timeStr) // 20211231的26月前： 2019-10-31 00:00:00 +0000 UTC <nil> 20191031
-
 }
 
 func TestGetNMonthAgoOrAfterThisDayByN2(t *testing.T) {
@@ -160,19 +156,36 @@ func TestGetPreferTimeByTimeStrAndDifference(t *testing.T) {
 	fmt.Println("20201130当天在上月的时间：", t1, err, t1.String(), t1.Day(), t1.Unix())
 }
 
+func TestGetTsByTimeStr(t *testing.T) {
+	t1, err := GetTsByTimeStr("2020-10-01 00:05:05")
+	fmt.Println(t1, err) //1601481905 <nil>
+	t3, err := GetTsByTimeStr("2020-10-00 00:05:05")
+	fmt.Println(t3, err) //-1 parsing time "2020-10-00 00:05:05": day out of range
+}
+
+func TestGetTimeStrOfDayTimeByTs(t *testing.T) {
+	t1 := GetTimeStrOfDayTimeByTs(1602133570)
+	fmt.Println(t1) //2020-10-08 13:06:10
+	t2 := GetTimeStrOfDayTimeByTs(1602086400)
+	fmt.Println(t2) //2020-10-08 00:00:00
+}
+
+func TestGetTimeByTs(t *testing.T) {
+	t1 := GetTimeByTs(1602133570)
+	fmt.Println(t1) //2020-10-08 13:06:10 +0800 CST
+	t2 := GetTimeByTs(1602086400)
+	fmt.Println(t2) //2020-10-08 00:00:00 +0800 CST
+}
+
 func TestGetTimeByStr(t *testing.T) {
 	t1, errs := GetTimeByStr("2020-10-01")
-	fmt.Println(t1)
-	fmt.Println(errs)
+	fmt.Println(t1) // 2020-10-01 00:00:00 +0000 UTC
 	t2, errs := GetTimeByStr("20201031")
-	fmt.Println(t2)
-	fmt.Println(errs)
+	fmt.Println(t2)                        // 2020-10-31 00:00:00 +0000 UTC
 	t3, errs := GetTimeByStr("2020/10/31") // error
 	fmt.Println(t3)
-	fmt.Println(errs)
 	t4, errs := GetTimeByStr("202110a1") // error
-	fmt.Println(t4)
-	fmt.Println(errs)
+	fmt.Println(t4, errs)
 	t5, errs := GetTimeByStr("31/10/2020") // error
 	fmt.Println(t5)
 	fmt.Println(errs)
