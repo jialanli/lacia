@@ -19,9 +19,9 @@ GetPreDayTimeStampByNow()             获取当前时间前一天的秒级时间
 GetTimeStrOfDayByTs(ts int64)         时间戳转对应日期字符串
 GetTimeStrOfDayZeroByTs(ts int64)     时间戳转对应日期零时字符串
 GetTimeStrOfDayTimeByTs(ts int64)     时间戳转对应日期的实际时间
-GetTimeStrOfBeforeDayByTs(ts int64)   时间戳转前一日日期的实际时间
-GetTimeStrOfBeforeDayZeroByTs(ts int64)  时间戳转前一日日期的零时时间
-GetTimeStrOfBeforeDayTimeByTs(ts int64)  时间戳转前一日日期的实际时间
+GetTimeStrOfDifferenceDayByTs(ts int64,n int)   时间戳转n日前/后的实际日时间
+GetTimeStrOfDifferenceDayZeroByTs(ts int64,n int)  时间戳转n日前/后的零时时间
+GetTimeStrOfDifferenceDayTimeByTs(ts int64,n int)  时间戳转n日前/后的实际时间
 GetDaysInMonth(yearInt, month int)   给定年月值获取该月有多少天
 GetNMonthAgoOrAfterThisDayByN(thisT *time.Time, thisTStr string, n int)   给定一个日期或日期字符串，返回n月前/后的当天日期
 GetAllDaysStrByMonths(startMonthT, endMonthT string, ifDelayOneDay bool)  给定两个月份，获取期间的所有天粒度的字符串列表（支持获取整体延后一天的时间列表）
@@ -40,6 +40,8 @@ var CstZone = time.FixedZone("CST", 8*3600)
 var TimeTemplate1 = "2006-01-02 15:04:05"
 var TimeTemplate2 = "2006/01/02 15:04:05"
 var TimeTemplate3 = "2006-01-02"
+var TimeTemplate5 = "20060102 150405"
+var TimeTemplate6 = "20060102"
 
 // ***************************日期比较start***************************
 /*
@@ -109,7 +111,7 @@ func GetTimeByStr(timeStr string) (time.Time, error) {
 	}
 	thisT, err := time.Parse(TimeTemplate3, timeStr)
 	if err != nil {
-		ts, err := GetTsByTimeStr(timeStr)
+		ts, err := GetTsByTimeStr(timeStr, TimeTemplate3)
 		if err != nil {
 			return time.Time{}, err
 		}
@@ -124,9 +126,21 @@ func GetTimeByTs(ts int64) time.Time {
 	return time.Unix(ts, 0)
 }
 
-// 日期字符串转时间戳   --TODO
-func GetTsByTimeStr(timeStr string) (int64, error) {
-	thisT, err := time.ParseInLocation(TimeTemplate1, timeStr, time.Local)
+/*
+日期字符串转时间戳
+timeTemplate:日期模板，可选TimeTemplate1, TimeTemplate2, TimeTemplate3, TimeTemplate5, TimeTemplate6之一，对应如下：
+	var TimeTemplate1 = "2006-01-02 15:04:05"
+	var TimeTemplate2 = "2006/01/02 15:04:05"
+	var TimeTemplate3 = "2006-01-02"
+	var TimeTemplate5 = "20060102 150405"
+	var TimeTemplate6 = "20060102"
+*/
+func GetTsByTimeStr(timeStr, timeTemplate string) (int64, error) {
+	if ExistsInListString([]string{TimeTemplate1, TimeTemplate2, TimeTemplate3,
+		TimeTemplate5, TimeTemplate6}, timeTemplate, true)[0] == -1 {
+		return -1, errors.New("error layout,please check")
+	}
+	thisT, err := time.ParseInLocation(timeTemplate, timeStr, time.Local)
 	if err != nil {
 		return -1, err
 	}
@@ -141,44 +155,53 @@ func GetPreDayTimeStampByNow() int64 {
 // 时间戳转对应日期字符串 返回格式2020-09-03
 func GetTimeStrOfDayByTs(ts int64) string {
 	curTm := time.Unix(ts, 0)
-	return curTm.In(CstZone).Format("2006-01-02")
+	return curTm.In(CstZone).Format(TimeTemplate3)
 }
 
 // 时间戳转对应日期零时字符串 返回格式2020-09-03 00:00:00
 func GetTimeStrOfDayZeroByTs(ts int64) string {
 	curTm := time.Unix(ts, 0)
-	return curTm.In(CstZone).Format("2006-01-02") + " 00:00:00"
+	return curTm.In(CstZone).Format(TimeTemplate3) + " 00:00:00"
 }
 
 // 时间戳转对应日期的实际时间 返回格式2020-09-03 11:31:59
 func GetTimeStrOfDayTimeByTs(ts int64) string {
 	curTm := time.Unix(ts, 0)
-	return curTm.In(CstZone).Format("2006-01-02 15:04:05")
+	return curTm.In(CstZone).Format(TimeTemplate1)
 }
 
 // ***************************日期转换-->前一日start***************************
-// 时间戳转前一日日期的实际时间 返回格式2020-09-03 11:31:59
-func GetTimeStrOfBeforeDayByTs(ts int64) string {
+// 时间戳转n日前/后的实际时间 返回格式2020-09-03
+func GetTimeStrOfDifferenceDayByTs(ts int64, n int) string {
 	curTm := time.Unix(ts, 0)
-	beforeDayTime := curTm.In(CstZone).AddDate(0, 0, -1)
-	return beforeDayTime.In(CstZone).Format("2006-01-02")
+	beforeDayTime := curTm.In(CstZone).AddDate(0, 0, n)
+	return beforeDayTime.In(CstZone).Format(TimeTemplate3)
 }
 
-// 时间戳转前一日日期的零时时间 返回格式2020-09-03 00:00:00
-func GetTimeStrOfBeforeDayZeroByTs(ts int64) string {
+// 时间戳转n日前/后零时时间 返回格式2020-09-03 00:00:00
+func GetTimeStrOfDifferenceDayZeroByTs(ts int64, n int) string {
 	curTm := time.Unix(ts, 0)
-	beforeDayTime := curTm.In(CstZone).AddDate(0, 0, -1)
+	beforeDayTime := curTm.In(CstZone).AddDate(0, 0, n)
 	return beforeDayTime.In(CstZone).Format("2006-01-02") + " 00:00:00"
 }
 
-// 时间戳转前一日日期的实际时间 返回格式2020-09-03 11:31:59
-func GetTimeStrOfBeforeDayTimeByTs(ts int64) string {
+// 时间戳转n日前/后的实际时间 返回格式2020-09-03 11:31:59
+func GetTimeStrOfDifferenceDayTimeByTs(ts int64, n int) string {
 	curTm := time.Unix(ts, 0)
-	beforeDayTime := curTm.In(CstZone).AddDate(0, 0, -1)
-	return beforeDayTime.In(CstZone).Format("2006-01-02 15:04:05")
+	beforeDayTime := curTm.In(CstZone).AddDate(0, 0, n)
+	return beforeDayTime.In(CstZone).Format(TimeTemplate1)
 }
 
 // ***************************日期获取&计算start***************************
+// 判断指定日期A离B是否走过了指定距离  传入时间戳
+func CalcAreaByTimeStr(tsA, tsB, step int64) bool {
+	if tsB-tsA >= step {
+		return true
+	}
+
+	return false
+}
+
 //给定年月值,获取该月有多少天
 func GetDaysInMonth(yearInt, month int) (days int) {
 	switch month {

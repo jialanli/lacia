@@ -32,7 +32,23 @@ func TestRepeatElementSidesString(t *testing.T) {
 	fmt.Println("m:", m)
 }
 
-func TestExistsInList(t *testing.T) {
+func TestExistsInListString(t *testing.T) {
+	var arr0 = []string{TimeTemplate1, TimeTemplate2, TimeTemplate3, TimeTemplate5, TimeTemplate6, TimeTemplate1}
+	indexS := ExistsInListString(arr0, TimeTemplate3, true)
+	fmt.Println(indexS) // [2]
+	indexS = ExistsInListString(arr0, TimeTemplate1, true)
+	fmt.Println(indexS) // [0]
+	indexS = ExistsInListString(arr0, TimeTemplate5, false)
+	fmt.Println(indexS) // [3]
+	indexS = ExistsInListString(arr0, TimeTemplate1, false)
+	fmt.Println(indexS) // [0 5]
+	indexS = ExistsInListString(arr0, "", false)
+	fmt.Println(indexS) // [-1]
+	indexS = ExistsInListString(arr0, "2006", false)
+	fmt.Println(indexS) // [-1]
+}
+
+func TestExistsInListInt(t *testing.T) {
 	// 有序
 	var arr0 = []int{1, 2, 3, 4, 5}
 	fmt.Println(ExistsInSortList(arr0, 1))
@@ -40,13 +56,13 @@ func TestExistsInList(t *testing.T) {
 	fmt.Println(ExistsInSortList(arr0, 5))
 	// 无序
 	var arr = []int{11, 15, 6, 11, 15, 18, 6, 1, 11, 88, 88}
-	fmt.Println("11:", ExistsInList(arr, 11, true))  // 11: [0]
-	fmt.Println("11:", ExistsInList(arr, 11, false)) // 11: [0 8 3]
-	fmt.Println("15:", ExistsInList(arr, 15, false)) // 15: [1 4]
-	fmt.Println("6:", ExistsInList(arr, 6, false))   // 6: [2 6]
-	fmt.Println("18:", ExistsInList(arr, 18, false)) // 18: [5]
-	fmt.Println("7:", ExistsInList(arr, 7, false))   // 7: [-1]
-	fmt.Println("88:", ExistsInList(arr, 88, false)) // 88: [10 9]
-	fmt.Println("88:", ExistsInList(arr, 88, true))  // 88: [10]
-	fmt.Println("89:", ExistsInList(arr, 89, false)) // 89: [-1]
+	fmt.Println("11:", ExistsInListInt(arr, 11, true))  // 11: [0]
+	fmt.Println("11:", ExistsInListInt(arr, 11, false)) // 11: [0 8 3]
+	fmt.Println("15:", ExistsInListInt(arr, 15, false)) // 15: [1 4]
+	fmt.Println("6:", ExistsInListInt(arr, 6, false))   // 6: [2 6]
+	fmt.Println("18:", ExistsInListInt(arr, 18, false)) // 18: [5]
+	fmt.Println("7:", ExistsInListInt(arr, 7, false))   // 7: [-1]
+	fmt.Println("88:", ExistsInListInt(arr, 88, false)) // 88: [10 9]
+	fmt.Println("88:", ExistsInListInt(arr, 88, true))  // 88: [10]
+	fmt.Println("89:", ExistsInListInt(arr, 89, false)) // 89: [-1]
 }

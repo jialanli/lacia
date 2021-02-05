@@ -37,7 +37,6 @@ func DoHttpRequestWithHeader(method, url string, timeout time.Duration, body io.
 	client := &http.Client{Timeout: timeout}
 	req, err := http.NewRequest(method, url, body)
 	if err != nil {
-		err = fmt.Errorf("创建HTTP请求失败")
 		return
 	}
 
@@ -48,19 +47,16 @@ func DoHttpRequestWithHeader(method, url string, timeout time.Duration, body io.
 	}
 	resp, err := client.Do(req)
 	if err != nil {
-		err = fmt.Errorf("HTTP请求失败,Message:%s", err.Error())
 		return
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != 200 {
-		err = fmt.Errorf("HTTP请求失败,返回的HTTPCODE为[%d]", resp.StatusCode)
 		return
 	}
 
 	res, err = ioutil.ReadAll(resp.Body)
 	if err != nil {
-		err = fmt.Errorf("HTTP读取失败,Message:%s", err.Error())
 		return
 	}
 	return

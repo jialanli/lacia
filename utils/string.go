@@ -50,6 +50,73 @@ func CheckEveryStringLengthIsN(strList []string, n int) bool {
 	return true // all str length equals n, return true
 }
 
+// 计算给定src字符串中出现cond的次数   src范围:仅限于字母和数字   通用时使用CalcStrFrequencyWith
+func CalcStrFrequency(src, cond string) (n int) {
+	condCount, srcCount := len(cond), len(src)
+	if condCount > len(src) {
+		return -1
+	}
+
+	if condCount == 1 {
+		for i := 0; i < srcCount; i++ {
+			if string(src[i]) == cond {
+				n += 1
+			}
+		}
+		return
+	}
+
+	for i := 0; i < srcCount; {
+		if i+1 >= srcCount || i+condCount > srcCount {
+			break
+		}
+
+		if src[i:i+condCount] == cond {
+			n += 1
+			i += condCount
+			continue
+		}
+
+		i += 1
+	}
+
+	return
+}
+
+// 计算给定src字符串中出现cond的次数
+func CalcStrFrequencyWith(str, cond string) (n int) {
+	src := []rune(str)
+	condCount, srcCount := len([]rune(cond)), len(src)
+	if condCount > srcCount {
+		return -1
+	}
+
+	if condCount == 1 {
+		for i := 0; i < srcCount; i++ {
+			if string(src[i]) == cond {
+				n += 1
+			}
+		}
+		return
+	}
+
+	for i := 0; i < srcCount; {
+		if i+1 >= srcCount || i+condCount > srcCount {
+			break
+		}
+
+		if string(src[i:i+condCount]) == cond {
+			n += 1
+			i += condCount
+			continue
+		}
+
+		i += 1
+	}
+
+	return
+}
+
 var (
 	numberRe = regexp.MustCompile("[0-9]+")
 	wordRe   = regexp.MustCompile("[a-z]+")
@@ -57,8 +124,8 @@ var (
 
 // 版本号比较
 // eg:参数1 > 参数2 的版本时，返回true  反之为false
-func VersionGreaterThanT(a, b string) bool {
-	return GreaterThan(a, b)
+func CompareVersion(a, b string) bool {
+	return thanT(a, b)
 }
 
 func stripMetadata(v string) string {
@@ -78,19 +145,23 @@ func periodDashSplit(s string) []string {
 		return false
 	})
 }
+var thanStr = []string{".","-"}
 
-func GreaterThan(a, b string) bool {
+func thanT(a, b string) bool {
 	a = stripMetadata(a)
 	b = stripMetadata(b)
 
 	a = strings.TrimLeft(a, "v")
 	b = strings.TrimLeft(b, "v")
 
-	aSplit := periodDashSplit(a)
-	bSplit := periodDashSplit(b)
+	//aSplit := periodDashSplit(a)
+	//bSplit := periodDashSplit(b)
+
+	aSplit := SplitByManyStrWith(a,thanStr)
+	bSplit := SplitByManyStrWith(b,thanStr)
 
 	if len(bSplit) > len(aSplit) {
-		return !GreaterThan(b, a) && a != b
+		return !thanT(b, a) && a != b
 	}
 
 	for i := 0; i < len(aSplit); i++ {

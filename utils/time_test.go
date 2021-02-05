@@ -157,9 +157,17 @@ func TestGetPreferTimeByTimeStrAndDifference(t *testing.T) {
 }
 
 func TestGetTsByTimeStr(t *testing.T) {
-	t1, err := GetTsByTimeStr("2020-10-01 00:05:05")
+	t1, err := GetTsByTimeStr("2020-10-01 00:05:05", TimeTemplate1)
 	fmt.Println(t1, err) //1601481905 <nil>
-	t3, err := GetTsByTimeStr("2020-10-00 00:05:05")
+	t1, err = GetTsByTimeStr("2020/10/01 10:05:05", TimeTemplate2)
+	fmt.Println(t1, err) //1601481905 <nil>
+	t1, err = GetTsByTimeStr("20201001 100505", TimeTemplate5)
+	fmt.Println(t1, err) //1601481905 <nil>
+	t1, err = GetTsByTimeStr("20201001 000000", TimeTemplate5)
+	fmt.Println(t1, err) //1601481600 <nil>
+	t1, err = GetTsByTimeStr("20201001", TimeTemplate6)
+	fmt.Println(t1, err) //1601481600 <nil>// 零时时间戳
+	t3, err := GetTsByTimeStr("2020-10-00 00:05:05", TimeTemplate1)
 	fmt.Println(t3, err) //-1 parsing time "2020-10-00 00:05:05": day out of range
 }
 
