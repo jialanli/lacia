@@ -88,6 +88,58 @@ func SortArrDesc(arr []int) []int {
 	return arr
 }
 
+func SortFloat64ArrAsc(arr []float64) []float64 {
+	if len(arr) <= 1 {
+		return arr
+	}
+	base := arr[0]
+	left, right := 0, len(arr)-1
+	for i := 1; i <= right; {
+		if arr[i] > base {
+			if i != right {
+				arr[i], arr[right] = arr[right], arr[i]
+			}
+			right--
+		} else {
+			if i != left {
+				arr[i], arr[left] = arr[left], arr[i]
+			}
+			left++
+			i++
+		}
+	}
+
+	SortFloat64ArrAsc(arr[:left])
+	SortFloat64ArrAsc(arr[left+1:])
+	return arr
+}
+
+func SortFloat64ArrDesc(arr []float64) []float64 {
+	if len(arr) <= 1 {
+		return arr
+	}
+	base := arr[0]
+	left, right := 0, len(arr)-1
+	for i := 1; i <= right; {
+		if arr[i] < base {
+			if i != right {
+				arr[i], arr[right] = arr[right], arr[i]
+			}
+			right--
+		} else {
+			if i != left {
+				arr[i], arr[left] = arr[left], arr[i]
+			}
+			left++
+			i++
+		}
+	}
+
+	SortFloat64ArrDesc(arr[:left])
+	SortFloat64ArrDesc(arr[left+1:])
+	return arr
+}
+
 func SearchBy2Sides(arr []int, num int) int {
 	var low, high int
 	for low <= high {
@@ -160,6 +212,7 @@ func ExistsInListString(list []string, str string, onlyExists bool) (indexList [
 	}(list, str)
 	return
 }
+
 // 判断[]中是否存在某元素,存在则返回出现该元素的所有索引列表,不存在则返回indexList[0]=-1
 // num为要判定是否存在的元素,onlyExists为只需判断存在标志位，若onlyExists=true,则判断到存在num时即返回(indexList[0]不为-1)，否则持续判断收集出现该元素的所有索引列表
 func ExistsInListInt(list []int, num int, onlyExists bool) (indexList []int) {
