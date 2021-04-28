@@ -1,7 +1,6 @@
 package lacia
 
 import (
-	"fmt"
 	"time"
 )
 
@@ -23,6 +22,9 @@ type TaskInterface interface {
 }
 
 func NewTimed(ts, step int64) *TimedLan {
+	if ts < time.Now().Unix() {
+		ts = time.Now().Unix()
+	}
 	d := TimeSnap{CurTime: ts, NextTime: ts}
 	r := new(TimedLan)
 	r.C, r.IsClosed, r.Step, r.Snap = make(chan *TimeSnap, 1), false, step, d
@@ -36,8 +38,7 @@ func (tl *TimedLan) StartTimedLan() {
 			tl.Snap.NextTime = tl.Snap.CurTime + tl.Step
 		}
 		if tl.Snap.NextTime <= time.Now().Unix() {
-			fmt.Println("现在", tl.Snap.NextTime, "小于", time.Now().Unix())
-			fmt.Println("本次=", tl.Snap.NextTime)
+			//fmt.Println( tl.Snap.NextTime,  time.Now().Unix())
 			tl.C <- &TimeSnap{CurTime: tl.Snap.CurTime, NextTime: tl.Snap.NextTime + tl.Step}
 			tl.Snap.CurTime, tl.Snap.NextTime = tl.Snap.NextTime, tl.Snap.NextTime+tl.Step
 		}

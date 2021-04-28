@@ -238,7 +238,7 @@ func GetNMonthAgoOrAfterThisDayByN(thisT *time.Time, thisTStr string, n int) (re
 	thisYearInt, thisMonthInt, thisDayInt := 0, 0, 0
 	resYearStr, resMonthStr, resDayStr := "", "", ""
 	if thisT != nil {
-		fmt.Println("打印：", thisT.YearDay())
+		//fmt.Println("打印：", thisT.YearDay())
 		thisMonth := thisT.Month()
 		thisYearInt, thisDayInt = thisT.Year(), thisT.Day()
 		thisMonthInt = int(thisMonth)

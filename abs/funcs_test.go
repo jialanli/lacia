@@ -117,7 +117,6 @@ func writeTo(fileName, content string) error {
 }
 
 func addContent(file1Name, file2Name, content string) error {
-	// 两个函数各自执行各自的操作
 	return ConcurrencyGos(
 		// A
 		func() error {

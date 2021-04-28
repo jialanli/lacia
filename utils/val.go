@@ -34,7 +34,6 @@ func CalcRateFloat64(src, dst float64) float64 {
 	return (src - dst) / dst
 }
 
-// 整数反转
 func ReverseInt(x int) int {
 	num, res := x, 0
 	for num != 0 {
