@@ -20,10 +20,10 @@ func TestTimed1(t *testing.T) {
 
 func TestTimed2(t *testing.T) {
 	ts := time.Date(2021, 2, 2, 14, 18, 0, 0, time.Local).Unix()
-	first := ts
+	one := ts
 	fmt.Println("now=", time.Now().Unix())
-	fmt.Println("first=", first)
-	r := NewTimed(first, 15)
+	fmt.Println("first=", one)
+	r := NewTimed(one, 15)
 	fmt.Println("--1-：", r.Snap.CurTime, r.Snap.NextTime)
 	for {
 		select {

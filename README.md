@@ -1,14 +1,16 @@
-# lacia
+# lacia, jialanli
 
 ## 简介
 致力于打造快速、便捷的通用工具库
-常用的功能直接开箱使用、标准库未直接提供的的功能直接开箱使用
+常用高频功能、其它功能直接开箱使用
 
--->欢迎提出问题或建议，作者会不断改进；欢迎Star
+-->欢迎提出问题或建议，持续改进和补充
 
-go get -u github.com/jialanli/lacia
-或cd ~/go/src/github.com下 
+go get -u "github.com/jialanli/lacia"
 
+or
+
+cd ~/go/src/github.com
 git clone https://github.com/jialanli/lacia.git
 
 ## 内容介绍
@@ -16,12 +18,15 @@ git clone https://github.com/jialanli/lacia.git
 eg: 需要按多个分隔符切割字符串
 只需go get -u "github.com/jialanli/lacia"
 
-eg1：lacia.SplitByManyStr("ab+c*de+f/gh")  按默认的常用字符分割，返回分割好的[]string  
+eg1：lacia.SplitByManyStr("ab+c*de+f/gh")
 
-eg2：lacia.SplitByManyStrWith("ab+c*de+f/gh", []string{`*`, `+`, `/`}))   参数2为指定的要去除的字符集合, []string , 非常便捷。
-按需使用即可~
+eg2：lacia.SplitByManyStrWith("ab+c*de+f/gh", []string{`*`, `+`, `/`}))   
+参数2为指定的要去除的自定义字符集合, []string , 非常便捷,按需使用即可~
 
-各函数上均有明确说明，使用效果也可见对应文件的单元测试呦!
+eg3:if lacia.ExistsInListInt([]int{0, 1, 2}, 5) == -1 {}
+获取参数2出现次数、判断参数1中是否含有参数2等;
+
+各功能均有明确说明，使用效果也可见对应文件的单元测试呦!
 
 当前包含的方向:常用类型工具如string、日期、数组、各种转换等
 

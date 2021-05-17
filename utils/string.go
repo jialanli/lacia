@@ -136,16 +136,7 @@ func stripMetadata(v string) string {
 	return v
 }
 
-func periodDashSplit(s string) []string {
-	return strings.FieldsFunc(s, func(r rune) bool {
-		switch r {
-		case '.', '-':
-			return true
-		}
-		return false
-	})
-}
-var thanStr = []string{".","-"}
+var thanStr = []string{".", "-"}
 
 func thanT(a, b string) bool {
 	a = stripMetadata(a)
@@ -154,11 +145,8 @@ func thanT(a, b string) bool {
 	a = strings.TrimLeft(a, "v")
 	b = strings.TrimLeft(b, "v")
 
-	//aSplit := periodDashSplit(a)
-	//bSplit := periodDashSplit(b)
-
-	aSplit := SplitByManyStrWith(a,thanStr)
-	bSplit := SplitByManyStrWith(b,thanStr)
+	aSplit := SplitByManyStrWith(a, thanStr)
+	bSplit := SplitByManyStrWith(b, thanStr)
 
 	if len(bSplit) > len(aSplit) {
 		return !thanT(b, a) && a != b

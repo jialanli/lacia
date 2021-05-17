@@ -2,7 +2,7 @@ package lacia
 
 import "fmt"
 
-// 获取类型  --sample
+// --sample
 func GetValTypeOfSample(t interface{}) string {
 	switch t.(type) {
 	case func():
