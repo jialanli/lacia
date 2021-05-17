@@ -1,5 +1,5 @@
 # 静海
-by jialanli 2021 持续更新中...
+by jialanli 2020 持续更新中...
 
 so surprise
 
@@ -19,11 +19,11 @@ git clone https://github.com/jialanli/lacia.git
 
 eg：需要按多个分隔符切割字符串：
 
-方式1：    
+姿势1：    
 
     lacia.SplitByManyStr("ab+c*de+f/gh")
 
-方式2：
+姿势2：
 
     lacia.SplitByManyStrWith("ab+c*de+f/gh", []string{`*`, `+`, `/`}))   
 参数2为指定的要去除的自定义字符集合, []string , 非常便捷,按需使用即可~
@@ -38,6 +38,6 @@ eg：获取参数2出现次数、判断参数1中是否含有参数2等：
 
 
 持续改进和更新！
-作者的博客：https://lan6193.blog.csdn.net/  欢迎围观、感谢支持
+大本营：https://lan6193.blog.csdn.net/  欢迎围观、感谢支持
 
 一直在路上，随时补充中...期待新功能发布！
