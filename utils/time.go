@@ -196,22 +196,29 @@ func GetTimeStrOfDayTimeByTs(ts int64) string {
 }
 
 // ***************************日期转换-->前一日start***************************
-// 时间戳转n日前/后的实际时间 返回格式2020-09-03
-func GetTimeStrOfDifferenceDayByTs(ts int64, n int) string {
+// 时间戳转n日前/后指定格式的时间
+func GetTimeStrAfterNDayByTs(ts int64, n int, template string) string {
+	curTm := time.Unix(ts, 0)
+	beforeDayTime := curTm.In(CstZone).AddDate(0, 0, n)
+	return beforeDayTime.In(CstZone).Format(template)
+}
+
+// 时间戳转n日前/后的实际日时间 返回格式2020-09-03
+func GetTimeStrDayAfterNDayByTs(ts int64, n int) string {
 	curTm := time.Unix(ts, 0)
 	beforeDayTime := curTm.In(CstZone).AddDate(0, 0, n)
 	return beforeDayTime.In(CstZone).Format(TimeTemplate3)
 }
 
 // 时间戳转n日前/后零时时间 返回格式2020-09-03 00:00:00
-func GetTimeStrOfDifferenceDayZeroByTs(ts int64, n int) string {
+func GetTimeStrAfterNDayZeroByTs(ts int64, n int) string {
 	curTm := time.Unix(ts, 0)
 	beforeDayTime := curTm.In(CstZone).AddDate(0, 0, n)
 	return beforeDayTime.In(CstZone).Format("2006-01-02") + " 00:00:00"
 }
 
 // 时间戳转n日前/后的实际时间 返回格式2020-09-03 11:31:59
-func GetTimeStrOfDifferenceDayTimeByTs(ts int64, n int) string {
+func GetTimeStrAfterNDayTimeByTs(ts int64, n int) string {
 	curTm := time.Unix(ts, 0)
 	beforeDayTime := curTm.In(CstZone).AddDate(0, 0, n)
 	return beforeDayTime.In(CstZone).Format(TimeTemplate1)
