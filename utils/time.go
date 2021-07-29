@@ -10,30 +10,33 @@ import (
 
 /*
 ********************功能概览********************
-CompareTwoStrTime(t1, t2 string)      比较两个时间
 GetPreferTimeByTimeStrAndDifference(timeStr string, y, m, d int)    获取指定日期之前/之后的日期
-GetTimeByStr(timeStr string)          日期字符串转日期
-GetTsByTimeStr(timeStr string)        日期字符串转时间戳
-GetTimeByTs(ts int64)                 时间戳转日期
-GetPreDayTimeStampByNow()             获取当前时间前一天的秒级时间戳
-GetTimeStrOfDayByTs(ts int64)         时间戳转对应日期字符串
-GetTimeStrOfDayZeroByTs(ts int64)     时间戳转对应日期零时字符串
-GetTimeStrOfDayTimeByTs(ts int64)     时间戳转对应日期的实际时间
-GetTimeStrOfDifferenceDayByTs(ts int64,n int)   时间戳转n日前/后的实际日时间
-GetTimeStrOfDifferenceDayZeroByTs(ts int64,n int)  时间戳转n日前/后的零时时间
-GetTimeStrOfDifferenceDayTimeByTs(ts int64,n int)  时间戳转n日前/后的实际时间
+GetTimeByStr(timeStr string)          								日期字符串转日期
+GetTimeByTimeStrByTemplate(timeStr string, timeTemplate string)     日期字符串转日期
+GetTsByTimeStr(timeStr string)        								日期字符串转时间戳
+GetTsByTimeStrByTemplate(timeStr string, timeTemplate string)       日期字符串转时间戳
+GetTimeByTs(ts int64)                 								时间戳转日期
+GetTimeByTsByTemplate(ts int64, timeTemplate string)    			时间戳转日期
+GetPreDayTimeStampByNow()             								获取当前时间前一天的秒级时间戳
+GetTimeStrOfDayByTs(ts int64)         								时间戳转对应日期字符串
+GetTimeStrOfDayZeroByTs(ts int64)    								时间戳转对应日期零时字符串
+GetTimeStrOfDayTimeByTs(ts int64)    								时间戳转对应日期的实际时间
+GetTimeStrOfDifferenceDayByTs(ts int64,n int)   					时间戳转n日前/后的实际日时间
+GetTimeStrOfDifferenceDayZeroByTs(ts int64,n int)  					时间戳转n日前/后的零时时间
+GetTimeStrOfDifferenceDayTimeByTs(ts int64,n int)  					时间戳转n日前/后的实际时间
 GetDaysInMonth(yearInt, month int)   给定年月值获取该月有多少天
 GetNMonthAgoOrAfterThisDayByN(thisT *time.Time, thisTStr string, n int)   给定一个日期或日期字符串，返回n月前/后的当天日期
 GetAllDaysStrByMonths(startMonthT, endMonthT string, ifDelayOneDay bool)  给定两个月份，获取期间的所有天粒度的字符串列表（支持获取整体延后一天的时间列表）
-GetTimeListByTwoDayStr(startT, endT string, ifDelayOneDay bool)   给定一个时间区间，根据传入的时间精确到月/天，用于获取该区间内所有的天粒度/月粒度的时间字符串列表
-CheckTimeStrListIsCorrect(strList []string)    检查一批日期字符串是否是正常日期
-GetTimeListByTwoDayStr2(startT, endT string, ifDelayOneDay bool)   旧版。建议使用替代函数GetTimeListByTwoDayStr或GetAllDaysStrByMonths，功能同上述两函数
+GetTimeListByTwoDayStr(startT, endT string, ifDelayOneDay bool)   		  给定一个时间区间，根据传入的时间精确到月/天，用于获取该区间内所有的天粒度/月粒度的时间字符串列表
+CheckTimeStrListIsCorrect(strList []string)                               检查一批日期字符串是否是正常日期
+GetTimeListByTwoDayStr2(startT, endT string, ifDelayOneDay bool)          旧版。建议使用替代函数GetTimeListByTwoDayStr或GetAllDaysStrByMonths，功能同上述两函数
 GetDaysNumByTwoDays(yearInt, startMonthInt, startDayInt, endMonthInt, endDayInt int)       输入两个YYYYMMDD日期,返回期间的天数总长度
-GetYearMonthListByTwoDay(inputStart, inputEnd string)   给定两个YYYYMM或YYYYMMDD日期,返回期间的月份列表数组
-GetYearMonthListByTwoDayDelayOneDay(inputStart, inputEnd string)   给定两个YYYYMM或YYYYMMDD日期,返回期间的月份列表数组(整体顺延一月)
-IsJumpMonth(yearInt int, monthInt int, dayAdd int)      以给定的年月日判断dayAdd+1后是否到了下月
+GetYearMonthListByTwoDay(inputStart, inputEnd string)   			      给定两个YYYYMM或YYYYMMDD日期,返回期间的月份列表数组
+GetYearMonthListByTwoDayDelayOneDay(inputStart, inputEnd string)          给定两个YYYYMM或YYYYMMDD日期,返回期间的月份列表数组(整体顺延一月)
+IsJumpMonth(yearInt int, monthInt int, dayAdd int)                        以给定的年月日判断dayAdd+1后是否到了下月
 IsNum(s string)   判断一个字符串是否是纯数字
-ConvertTime2Str(inputTime string, isStart bool)    时间转换方法：转换时间20200504为"2020-05-04 00:00:00"格式
+CompareTwoStrTime(t1, t2 string)      								比较两个时间
+ConvertTime2Str(inputTime string, isStart bool)                            时间转换方法：转换时间20200504为"2020-05-04 00:00:00"格式
 */
 
 var CstZone = time.FixedZone("CST", 8*3600)
@@ -111,7 +114,7 @@ func GetTimeByStr(timeStr string) (time.Time, error) {
 	}
 	thisT, err := time.Parse(TimeTemplate3, timeStr)
 	if err != nil {
-		ts, err := GetTsByTimeStr(timeStr, TimeTemplate3)
+		ts, err := GetTsByTimeStrByTemplate(timeStr, TimeTemplate3)
 		if err != nil {
 			return time.Time{}, err
 		}
@@ -135,7 +138,9 @@ timeTemplate:日期模板，可选TimeTemplate1, TimeTemplate2, TimeTemplate3, T
 	var TimeTemplate5 = "20060102 150405"
 	var TimeTemplate6 = "20060102"
 */
-func GetTsByTimeStr(timeStr, timeTemplate string) (int64, error) {
+
+// 日期字符串转时间戳
+func GetTsByTimeStrByTemplate(timeStr, timeTemplate string) (int64, error) { // 2021-07-09T16:20:00Z
 	if ExistsInListString([]string{TimeTemplate1, TimeTemplate2, TimeTemplate3,
 		TimeTemplate5, TimeTemplate6}, timeTemplate, true)[0] == -1 {
 		return -1, errors.New("error layout,please check")
@@ -145,6 +150,26 @@ func GetTsByTimeStr(timeStr, timeTemplate string) (int64, error) {
 		return -1, err
 	}
 	return thisT.Unix(), nil
+}
+
+// 日期字符串转日期
+func GetTimeByTimeStrByTemplate(timeStr, timeTemplate string) (time.Time, error) { // 2021-07-09T16:20:00Z
+	if ExistsInListString([]string{TimeTemplate1, TimeTemplate2, TimeTemplate3,
+		TimeTemplate5, TimeTemplate6}, timeTemplate, true)[0] == -1 {
+		return time.Time{}, errors.New("error layout,please check")
+	}
+
+	return time.ParseInLocation(timeTemplate, timeStr, time.Local)
+}
+
+// 时间戳转日期
+func GetTimeByTsByTemplate(ts int64, timeTemplate string) (time.Time, error) {
+	if ExistsInListString([]string{TimeTemplate1, TimeTemplate2, TimeTemplate3,
+		TimeTemplate5, TimeTemplate6}, timeTemplate, true)[0] == -1 {
+		return time.Time{}, errors.New("error layout,please check")
+	}
+
+	return time.ParseInLocation(timeTemplate, GetTimeStrOfDayTimeByTs(ts), time.Local)
 }
 
 // 获取当前时间前一天的秒级时间戳

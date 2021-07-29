@@ -157,25 +157,24 @@ func TestGetPreferTimeByTimeStrAndDifference(t *testing.T) {
 }
 
 func TestGetTsByTimeStr(t *testing.T) {
-	t1, err := GetTsByTimeStr("2020-10-01 00:05:05", TimeTemplate1)
+	t1, err := GetTsByTimeStrByTemplate("2020-10-01 00:05:05", TimeTemplate1)
 	fmt.Println(t1, err) //1601481905 <nil>
-	t1, err = GetTsByTimeStr("2020/10/01 10:05:05", TimeTemplate2)
+	t1, err = GetTsByTimeStrByTemplate("2020/10/01 10:05:05", TimeTemplate2)
 	fmt.Println(t1, err) //1601481905 <nil>
-	t1, err = GetTsByTimeStr("20201001 100505", TimeTemplate5)
+	t1, err = GetTsByTimeStrByTemplate("20201001 100505", TimeTemplate5)
 	fmt.Println(t1, err) //1601481905 <nil>
-	t1, err = GetTsByTimeStr("20201001 000000", TimeTemplate5)
+	t1, err = GetTsByTimeStrByTemplate("20201001 000000", TimeTemplate5)
 	fmt.Println(t1, err) //1601481600 <nil>
-	t1, err = GetTsByTimeStr("20201001", TimeTemplate6)
+	t1, err = GetTsByTimeStrByTemplate("20201001", TimeTemplate6)
 	fmt.Println(t1, err) //1601481600 <nil>// 零时时间戳
-	t3, err := GetTsByTimeStr("2020-10-00 00:05:05", TimeTemplate1)
+	t3, err := GetTsByTimeStrByTemplate("2020-10-00 00:05:05", TimeTemplate1)
 	fmt.Println(t3, err) //-1 parsing time "2020-10-00 00:05:05": day out of range
 }
 
-func TestGetTimeStrOfDayTimeByTs(t *testing.T) {
-	t1 := GetTimeStrOfDayTimeByTs(1602133570)
-	fmt.Println(t1) //2020-10-08 13:06:10
-	t2 := GetTimeStrOfDayTimeByTs(1602086400)
-	fmt.Println(t2) //2020-10-08 00:00:00
+func TestGetTimeByTimeStr(t *testing.T) {
+	t1, err := GetTimeByTimeStrByTemplate("2020-10-01 00:05:05", TimeTemplate1)
+	fmt.Println(t1, err) // 2020-10-01 00:05:05 +0800 CST <nil>
+
 }
 
 func TestGetTimeByTs(t *testing.T) {
@@ -183,6 +182,18 @@ func TestGetTimeByTs(t *testing.T) {
 	fmt.Println(t1) //2020-10-08 13:06:10 +0800 CST
 	t2 := GetTimeByTs(1602086400)
 	fmt.Println(t2) //2020-10-08 00:00:00 +0800 CST
+}
+
+func TestGetTimeByTsByTemplate(t *testing.T) {
+	t1, err := GetTimeByTsByTemplate(1602133570, TimeTemplate1)
+	fmt.Println(t1, err) // 2020-10-08 13:06:10 +0800 CST <nil>
+}
+
+func TestGetTimeStrOfDayTimeByTs(t *testing.T) {
+	t1 := GetTimeStrOfDayTimeByTs(1602133570)
+	fmt.Println(t1) //2020-10-08 13:06:10
+	t2 := GetTimeStrOfDayTimeByTs(1602086400)
+	fmt.Println(t2) //2020-10-08 00:00:00
 }
 
 func TestGetTimeByStr(t *testing.T) {
