@@ -8,7 +8,7 @@ so surprise
 
 -->欢迎提出问题或建议，持续改进和补充
 
-go get -u "github.com/jialanli/lacia"
+go get -u "github.com/jialanli/lacia/utils"
 
 or
 
