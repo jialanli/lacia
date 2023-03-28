@@ -5,6 +5,19 @@ import (
 	"testing"
 )
 
+/*
+func TestRemoveX				去除指定字符
+func TestDeletePreAndSufSpace	去除首尾空格
+func TestCalcStrFrequency		指定字符在字符串中出现的次数（src范围:仅限于字母和数字）
+func TestCalcStrFrequencyWith	指定字符在字符串中出现的次数（src范围:所有通用）
+func TestVersionGreaterThanT	字符串版本号比较
+func TestSplitByManyStrWith		按多个指定字符切割字符串
+func TestTrimLineFeed			去除字符串中所有多余换行符(换行的时候只保留一个换行符),首尾换行符也一并去掉
+func TestTrimAllFeeds			去除字符串中所有换行符
+func TestTrimHeadTailFeedsOnce	字符串中首尾单次换行符
+func TestTrimHeadTailFeeds		字符串中首尾所有换行符
+func TestTrimHeadTailFeedsAndSpaces		去除字符串中首尾所有换行符、首尾所有空格
+*/
 func TestRemoveX(t *testing.T) {
 	var r = `\`
 	var x = `abc\scs\\c\..\\\.`
@@ -111,4 +124,146 @@ func TestSplitByManyStrWith(t *testing.T) {
 	fmt.Println(SplitByManyStrWith("ab+c*de+f/gh", []string{`*`, `+`, `/`}))    // [ab c de f gh]
 	fmt.Println(SplitByManyStrWith("a%%b&c&d%h+fg-h", []string{`&`, `%`, `-`})) // [a b c d h+fg h]
 	fmt.Println(SplitByManyStrWith("a:b=c", []string{`=`, `:`}))                // [a b c]
+}
+
+// 去除字符串中所有多余换行符(换行的时候只保留一个换行符),首尾换行符也一并去掉
+func TestTrimLineFeed(t *testing.T) {
+	var x = `
+
+x
+
+
+yx
+
+
+z
+
+`
+	t.Log("---------------------")
+	for i := 0; i < len(x); i++ {
+		t.Log(x[i])
+	}
+	t.Log("---------------------")
+
+	y := TrimLineFeed(x)
+	t.Log("|", y, "|")
+	t.Log(x == y)
+	t.Log("---------------------")
+	for i := 0; i < len(y); i++ {
+		t.Log(y[i])
+	}
+	t.Log("---------------------")
+}
+
+// 去除字符串中所有换行符
+func TestTrimAllFeeds(t *testing.T) {
+	var x = `
+
+x
+
+
+yx
+
+
+
+`
+	t.Log("---------------------")
+	for i := 0; i < len(x); i++ {
+		t.Log(x[i])
+	}
+	t.Log("---------------------")
+
+	y := TrimAllFeeds(x)
+	t.Log("|", y, "|")
+	t.Log(x == y)
+	t.Log("---------------------")
+	for i := 0; i < len(y); i++ {
+		t.Log(y[i])
+	}
+	t.Log("---------------------")
+}
+
+// 去除字符串中首尾单次换行符
+func TestTrimHeadTailFeedsOnce(t *testing.T) {
+	var x = `
+
+x
+
+
+yx
+
+
+
+`
+	t.Log("---------------------")
+	for i := 0; i < len(x); i++ {
+		t.Log(x[i])
+	}
+	t.Log("---------------------")
+
+	y := TrimHeadTailFeedsOnce(x)
+	t.Log("|", y, "|")
+	t.Log(x == y)
+	t.Log("---------------------")
+	for i := 0; i < len(y); i++ {
+		t.Log(y[i])
+	}
+	t.Log("---------------------")
+}
+
+// 去除字符串中首尾所有换行符
+func TestTrimHeadTailFeeds(t *testing.T) {
+	var x = `
+
+x
+
+
+yx
+
+
+
+`
+	t.Log("---------------------")
+	for i := 0; i < len(x); i++ {
+		t.Log(x[i])
+	}
+	t.Log("---------------------")
+
+	y := TrimHeadTailFeeds(x)
+	t.Log("|", y, "|")
+	t.Log(x == y)
+	t.Log("---------------------")
+	for i := 0; i < len(y); i++ {
+		t.Log(y[i])
+	}
+	t.Log("---------------------")
+}
+
+// 去除字符串中首尾所有换行符、首尾所有空格
+func TestTrimHeadTailFeedsAndSpaces(t *testing.T) {
+	var x = `
+ 
+x
+
+
+yx 
+
+
+z 
+
+`
+	t.Log("---------------------")
+	for i := 0; i < len(x); i++ {
+		t.Log(x[i])
+	}
+	t.Log("---------------------")
+
+	y := TrimHeadTailFeedsAndSpaces(x)
+	t.Log("|", y, "|")
+	t.Log(x == y)
+	t.Log("---------------------")
+	for i := 0; i < len(y); i++ {
+		t.Log(y[i])
+	}
+	t.Log("---------------------")
 }

@@ -17,7 +17,7 @@ func RemoveX(str string, x string) string {
 	return res
 }
 
-// 删除字符串前后空格
+// 删除字符串首尾空格
 func DeletePreAndSufSpace(str string) string {
 	strList := []byte(str)
 	spaceCount, count := 0, len(strList)
@@ -38,6 +38,177 @@ func DeletePreAndSufSpace(str string) string {
 	}
 
 	return string(strList[:count-spaceCount])
+}
+
+/*
+去除字符串中所有换行符与所有空格
+*/
+func TrimAllFeedAndSpace(src string) (dist string) {
+	if len(src) == 0 {
+		return
+	}
+
+	r, distR := []rune(src), []rune{}
+	for i := 0; i < len(r); i++ {
+		if r[i] == 10 || r[i] == 32 {
+			continue
+		}
+
+		distR = append(distR, r[i])
+	}
+
+	dist = string(distR)
+	return
+}
+
+/*
+去除字符串中所有换行符
+*/
+func TrimAllFeeds(src string) (dist string) {
+	if len(src) == 0 {
+		return
+	}
+
+	r, distR := []rune(src), []rune{}
+	for i := 0; i < len(r); i++ {
+		if r[i] == 10 {
+			continue
+		}
+
+		distR = append(distR, r[i])
+	}
+
+	dist = string(distR)
+	return
+}
+
+/*去除字符串中首尾所有换行符、首尾所有空格*/
+func TrimHeadTailFeedsAndSpaces(src string) (dist string) {
+	if len(src) == 0 {
+		return
+	}
+
+	r := []rune(src)
+	count := len(r)
+	for i := 0; i < count; i++ {
+		if r[i] != 10 && r[i] != 32 {
+			r = r[i:]
+			break
+		}
+	}
+
+	count = len(r)
+	var distR []rune = r
+	for i := count - 1; i >= 0; i-- {
+		if r[i] == 10 || r[i] == 32 {
+			distR = r[:i]
+			continue
+		}
+
+		break
+	}
+
+	dist = string(distR)
+	return
+}
+
+/*去除字符串中首尾单次换行符*/
+func TrimHeadTailFeedsOnce(src string) (dist string) {
+	if len(src) == 0 {
+		return
+	}
+
+	r, distR := []rune(src), []rune{}
+	count := len(r)
+
+	for i := 0; i < len(r); i++ {
+		if r[i] == 10 && (i == 0 || i == count-1) {
+			continue
+		}
+
+		distR = append(distR, r[i])
+	}
+
+	dist = string(distR)
+	return
+}
+
+/*去除字符串中首尾所有换行符*/
+func TrimHeadTailFeeds(src string) (dist string) {
+	if len(src) == 0 {
+		return
+	}
+
+	r := []rune(src)
+	count := len(r)
+	for i := 0; i < count; i++ {
+		if r[i] != 10 {
+			r = r[i:]
+			break
+		}
+	}
+
+	count = len(r)
+	var distR []rune = r
+	for i := count - 1; i >= 0; i-- {
+		if r[i] == 10 {
+			distR = r[:i]
+			continue
+		}
+
+		break
+	}
+
+	dist = string(distR)
+	return
+}
+
+/*
+去除字符串中所有多余换行符(换行的时候只保留一个换行符),首尾换行符也一并去掉
+eg:-->before trim:
+
+x
+
+
+yx
+
+即\nx\n\n\nyx\n\n
+
+-->after trim:
+x
+yx
+即x\nyx
+*/
+func TrimLineFeed(src string) (dist string) {
+	src = TrimHeadTailFeeds(src)
+	if len(src) == 0 {
+		return
+	}
+
+	r, distR := []rune(src), []rune{}
+	count := len(r) - 1
+
+	var lastIsFeed bool
+	for i := 0; i < len(r); i++ {
+		if r[i] == 10 {
+			if i == 0 || i == count {
+				continue
+			}
+
+			if lastIsFeed {
+				continue
+			}
+
+			lastIsFeed = true
+		} else {
+			lastIsFeed = false
+		}
+
+		distR = append(distR, r[i])
+	}
+
+	dist = string(distR)
+	return
 }
 
 // 检查一组字符串中每个字符串的长度,只要有一个字符串的长度不为n则返回false

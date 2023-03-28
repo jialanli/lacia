@@ -107,12 +107,12 @@ func writeTo(fileName, content string) error {
 	//}
 
 	if err != nil {
-		fmt.Println("写入报错：", err.Error())
+		//fmt.Println("写入报错：", err.Error())
 		return err
 	}
 	defer dstFile.Close()
 	dstFile.WriteString(content + "\n")
-	fmt.Println("写入完成：", fileName)
+	//fmt.Println("写入完成：", fileName)
 	return nil
 }
 

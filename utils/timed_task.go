@@ -4,6 +4,10 @@ import (
 	"time"
 )
 
+/*
+简易定时器
+*/
+
 type TimeSnap struct {
 	CurTime  int64
 	NextTime int64

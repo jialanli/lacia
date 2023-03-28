@@ -1,40 +1,5 @@
 package lacia
 
-// new many slice
-func NewSlice(valT interface{}, n int) {
-	t := GetValTypeOf(valT)
-	type sType interface{}
-	switch t {
-	case "func":
-		//sType = sType.(func())
-	case "bool":
-		//sType = bool(sType)
-	case "float64":
-		//sType = sType.(bool)
-		return
-	case "float32":
-		return
-	case "string":
-		return
-	case "[]string":
-		return
-	case "[]int":
-		return
-	case "[]int64":
-		return
-	case "[]int8":
-		return
-	case "[]int32":
-		return
-	default:
-
-	}
-	//var slist sType
-	for i := 1; i <= n; i++ {
-
-	}
-}
-
 // 排序:sortBy传空时默认按降序,传asc时按升序
 func SortArrAsc(arr []int) []int {
 	if len(arr) <= 1 {

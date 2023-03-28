@@ -35,7 +35,6 @@ GetYearMonthListByTwoDay(inputStart, inputEnd string)   			      给定两个YYY
 GetYearMonthListByTwoDayDelayOneDay(inputStart, inputEnd string)          给定两个YYYYMM或YYYYMMDD日期,返回期间的月份列表数组(整体顺延一月)
 IsJumpMonth(yearInt int, monthInt int, dayAdd int)                        以给定的年月日判断dayAdd+1后是否到了下月
 IsNum(s string)   判断一个字符串是否是纯数字
-CompareTwoStrTime(t1, t2 string)      								比较两个时间
 ConvertTime2Str(inputTime string, isStart bool)                            时间转换方法：转换时间20200504为"2020-05-04 00:00:00"格式
 */
 
@@ -45,50 +44,6 @@ var TimeTemplate2 = "2006/01/02 15:04:05"
 var TimeTemplate3 = "2006-01-02"
 var TimeTemplate5 = "20060102 150405"
 var TimeTemplate6 = "20060102"
-
-// ***************************日期比较start***************************
-/*
-传入两个字符串类型的日期,格式可以是YYYYMMDD、YYYYMMDD HH:mm:ss、YYYY-MM-DD、YYYY/MM/DD之一
-不论是什么格式，t1和t2两者格式必须相同
-return:
-	t1=t2  		return 0
-	t1>t2  		return 1
-	t1<t2  		return 2
-	not compare return -1
-*/
-func CompareTwoStrTime(t1, t2 string) int {
-	if len(t1) != len(t2) {
-		return -1
-	}
-
-	t1, t2 = RemoveX(t1, ` `), RemoveX(t2, ` `)
-	count := len(t1)
-	for i := 0; i < count; i++ {
-		if t1[i] == t2[i] {
-			continue
-		}
-		if !IsNum(string(t1[i])) || !IsNum(string(t2[i])) {
-			continue
-		}
-		n1, err := strconv.Atoi(string(t1[i]))
-		if err != nil {
-			return -1
-		}
-		n2, err := strconv.Atoi(string(t2[i]))
-		if err != nil {
-			return -1
-		}
-
-		if n1 > n2 {
-			return 1
-		}
-		if n2 > n1 {
-			return 2
-		}
-	}
-
-	return 0
-}
 
 // ***************************日期转换-->当日start***************************
 // 获取指定日期之前/之后的日期  timeStr格式:YYYYMMDD
@@ -257,7 +212,7 @@ func GetDaysInMonth(yearInt, month int) (days int) {
 
 // 给定一个日期或日期字符串，返回n月前/后的当天日期
 // 传入日期或日期字符串两者之一即可。日期字符串格式：YYYYMMDD
-// 应用:月同比
+// 场景举例:月同比
 func GetNMonthAgoOrAfterThisDayByN(thisT *time.Time, thisTStr string, n int) (resT time.Time, resTStr string, err error) {
 	if thisTStr == "" && thisT == nil {
 		err = errors.New("params format error")
