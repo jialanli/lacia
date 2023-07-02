@@ -107,7 +107,6 @@ func writeTo(fileName, content string) error {
 	//}
 
 	if err != nil {
-		//fmt.Println("写入报错：", err.Error())
 		return err
 	}
 	defer dstFile.Close()
