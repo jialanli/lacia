@@ -19,6 +19,8 @@ func SwitchFromString(src string, kind reflect.Kind) (dist interface{}, err erro
 	case reflect.Float64:
 		dist, err = strconv.ParseFloat(src, 64)
 	}
+
+	return
 }
 
 // --sample
