@@ -1,6 +1,25 @@
 package lacia
 
-import "fmt"
+import (
+	"fmt"
+	"reflect"
+	"strconv"
+)
+
+func SwitchFromString(src string, kind reflect.Kind) (dist interface{}, err error) {
+	switch kind {
+	case reflect.Int:
+		dist, err = strconv.Atoi(src)
+	case reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+		dist, err = strconv.ParseInt(src, 10, 64)
+	case reflect.Float32:
+		var dist64 float64
+		dist64, err = strconv.ParseFloat(src, 32)
+		dist = float32(dist64)
+	case reflect.Float64:
+		dist, err = strconv.ParseFloat(src, 64)
+	}
+}
 
 // --sample
 func GetValTypeOfSample(t interface{}) string {

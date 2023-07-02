@@ -5,7 +5,8 @@ import (
 )
 
 /*
-简易定时器
+sample timer
+author: jialanli
 */
 
 type TimeSnap struct {

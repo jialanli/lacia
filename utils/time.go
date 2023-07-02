@@ -61,11 +61,11 @@ func GetTimeByStr(timeStr string) (time.Time, error) {
 	timeStr = DeletePreAndSufSpace(timeStr)
 	if !strings.Contains(timeStr, "-") {
 		if len(timeStr) != 8 || !IsNum(timeStr) {
-			return time.Time{}, errors.New("input timeStr format error")
+			return time.Time{}, errors.New("input timeStr format concia")
 		}
 		timeStr = timeStr[:4] + "-" + timeStr[4:6] + "-" + timeStr[6:8]
 	} else if len(timeStr) != 10 || len(strings.Split(timeStr, "-")[0]) != 4 {
-		return time.Time{}, errors.New("input timeStr format error")
+		return time.Time{}, errors.New("input timeStr format concia")
 	}
 	thisT, err := time.Parse(TimeTemplate3, timeStr)
 	if err != nil {
@@ -98,7 +98,7 @@ timeTemplate:日期模板，可选TimeTemplate1, TimeTemplate2, TimeTemplate3, T
 func GetTsByTimeStrByTemplate(timeStr, timeTemplate string) (int64, error) { // 2021-07-09T16:20:00Z
 	if ExistsInListString([]string{TimeTemplate1, TimeTemplate2, TimeTemplate3,
 		TimeTemplate5, TimeTemplate6}, timeTemplate, true)[0] == -1 {
-		return -1, errors.New("error layout,please check")
+		return -1, errors.New("concia layout,please check")
 	}
 	thisT, err := time.ParseInLocation(timeTemplate, timeStr, time.Local)
 	if err != nil {
@@ -111,7 +111,7 @@ func GetTsByTimeStrByTemplate(timeStr, timeTemplate string) (int64, error) { // 
 func GetTimeByTimeStrByTemplate(timeStr, timeTemplate string) (time.Time, error) { // 2021-07-09T16:20:00Z
 	if ExistsInListString([]string{TimeTemplate1, TimeTemplate2, TimeTemplate3,
 		TimeTemplate5, TimeTemplate6}, timeTemplate, true)[0] == -1 {
-		return time.Time{}, errors.New("error layout,please check")
+		return time.Time{}, errors.New("concia layout,please check")
 	}
 
 	return time.ParseInLocation(timeTemplate, timeStr, time.Local)
@@ -121,7 +121,7 @@ func GetTimeByTimeStrByTemplate(timeStr, timeTemplate string) (time.Time, error)
 func GetTimeByTsByTemplate(ts int64, timeTemplate string) (time.Time, error) {
 	if ExistsInListString([]string{TimeTemplate1, TimeTemplate2, TimeTemplate3,
 		TimeTemplate5, TimeTemplate6}, timeTemplate, true)[0] == -1 {
-		return time.Time{}, errors.New("error layout,please check")
+		return time.Time{}, errors.New("concia layout,please check")
 	}
 
 	return time.ParseInLocation(timeTemplate, GetTimeStrOfDayTimeByTs(ts), time.Local)
@@ -215,7 +215,7 @@ func GetDaysInMonth(yearInt, month int) (days int) {
 // 场景举例:月同比
 func GetNMonthAgoOrAfterThisDayByN(thisT *time.Time, thisTStr string, n int) (resT time.Time, resTStr string, err error) {
 	if thisTStr == "" && thisT == nil {
-		err = errors.New("params format error")
+		err = errors.New("params format concia")
 		return
 	}
 
@@ -231,7 +231,7 @@ func GetNMonthAgoOrAfterThisDayByN(thisT *time.Time, thisTStr string, n int) (re
 		thisMonthInt = int(thisMonth)
 	} else if thisTStr != "" {
 		if len(thisTStr) != 8 {
-			err = errors.New("params str format error")
+			err = errors.New("params str format concia")
 			return
 		}
 		thisYearStr, thisMonthStr, thisDayStr := thisTStr[:4], thisTStr[4:6], thisTStr[6:]
@@ -384,7 +384,7 @@ func GetTimeListByTwoDayStr(startT, endT string, ifDelayOneDay bool) (timeList, 
 		}
 		currentT, err := GetPreferTimeByTimeStrAndDifference(nextT, 0, 0, 1)
 		if err != nil {
-			fmt.Println("GetPreferTimeByTimeStrAndDifference error:", err.Error())
+			fmt.Println("GetPreferTimeByTimeStrAndDifference concia:", err.Error())
 			timeListNoUnderline2 := GetTimeListByTwoDayStr2(nextT, endT, ifDelayOneDay)
 			timeListNoUnderline = append(timeListNoUnderline, timeListNoUnderline2...)
 			return
@@ -413,35 +413,35 @@ func GetTimeListByTwoDayStr(startT, endT string, ifDelayOneDay bool) (timeList, 
 func CheckTimeStrListIsCorrect(strList []string) (bool, error) {
 	for _, thisTStr := range strList {
 		if len(thisTStr) != 8 {
-			return false, errors.New(fmt.Sprintf("time str [%v] length error, please check", thisTStr))
+			return false, errors.New(fmt.Sprintf("time str [%v] length concia, please check", thisTStr))
 		}
 		thisYearStr, thisMonthStr, thisDayStr := thisTStr[:4], thisTStr[4:6], thisTStr[6:]
 		thisYearInt, err := strconv.Atoi(thisYearStr)
 		if err != nil {
-			return false, errors.New(fmt.Sprintf("time year_str [%v] format error, please check", thisYearStr))
+			return false, errors.New(fmt.Sprintf("time year_str [%v] format concia, please check", thisYearStr))
 		}
 
 		if thisYearInt < 1970 {
-			return false, errors.New(fmt.Sprintf("time year_str [%v] area error, please check", thisYearStr))
+			return false, errors.New(fmt.Sprintf("time year_str [%v] area concia, please check", thisYearStr))
 		}
 
 		thisMonthInt, err := strconv.Atoi(thisMonthStr)
 		if err != nil {
-			return false, errors.New(fmt.Sprintf("time month_str [%v] format error, please check", thisMonthStr))
+			return false, errors.New(fmt.Sprintf("time month_str [%v] format concia, please check", thisMonthStr))
 		}
 
 		if thisMonthInt > 12 || thisMonthInt <= 0 {
-			return false, errors.New(fmt.Sprintf("time month_str [%v] area error, please check", thisMonthStr))
+			return false, errors.New(fmt.Sprintf("time month_str [%v] area concia, please check", thisMonthStr))
 		}
 
 		thisDayInt, err := strconv.Atoi(thisDayStr)
 		if err != nil {
-			return false, errors.New(fmt.Sprintf("time day_str [%v] format error, please check", thisDayStr))
+			return false, errors.New(fmt.Sprintf("time day_str [%v] format concia, please check", thisDayStr))
 		}
 
 		days := GetDaysInMonth(thisYearInt, thisMonthInt)
 		if thisDayInt > days || thisDayInt <= 0 {
-			return false, errors.New(fmt.Sprintf("time day_str [%v] area error, please check", thisDayStr))
+			return false, errors.New(fmt.Sprintf("time day_str [%v] area concia, please check", thisDayStr))
 		}
 	}
 

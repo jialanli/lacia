@@ -1,8 +1,6 @@
 package lacia
 
 import (
-	"regexp"
-	"strconv"
 	"strings"
 )
 
@@ -288,82 +286,8 @@ func CalcStrFrequencyWith(str, cond string) (n int) {
 	return
 }
 
-var (
-	numberRe = regexp.MustCompile("[0-9]+")
-	wordRe   = regexp.MustCompile("[a-z]+")
-)
-
-// 版本号比较
-// eg:参数1 > 参数2 的版本时，返回true  反之为false
-func CompareVersion(a, b string) bool {
-	return thanT(a, b)
-}
-
-func stripMetadata(v string) string {
-	split := strings.Split(v, "+")
-	if len(split) > 1 {
-		return split[0]
-	}
-	return v
-}
-
-var thanStr = []string{".", "-"}
-
-func thanT(a, b string) bool {
-	a = stripMetadata(a)
-	b = stripMetadata(b)
-
-	a = strings.TrimLeft(a, "v")
-	b = strings.TrimLeft(b, "v")
-
-	aSplit := SplitByManyStrWith(a, thanStr)
-	bSplit := SplitByManyStrWith(b, thanStr)
-
-	if len(bSplit) > len(aSplit) {
-		return !thanT(b, a) && a != b
-	}
-
-	for i := 0; i < len(aSplit); i++ {
-		if i == len(bSplit) {
-			if _, err := strconv.Atoi(aSplit[i]); err == nil {
-				return true
-			}
-			return false
-		}
-		aWord := wordRe.FindString(aSplit[i])
-		bWord := wordRe.FindString(bSplit[i])
-		if aWord != "" && bWord != "" {
-			if strings.Compare(aWord, bWord) > 0 {
-				return true
-			}
-			if strings.Compare(bWord, aWord) > 0 {
-				return false
-			}
-		}
-		aMatch := numberRe.FindString(aSplit[i])
-		bMatch := numberRe.FindString(bSplit[i])
-		if aMatch == "" || bMatch == "" {
-			if strings.Compare(aSplit[i], bSplit[i]) > 0 {
-				return true
-			}
-			if strings.Compare(bSplit[i], aSplit[i]) > 0 {
-				return false
-			}
-		}
-		aNum, _ := strconv.Atoi(aMatch)
-		bNum, _ := strconv.Atoi(bMatch)
-		if aNum > bNum {
-			return true
-		}
-		if bNum > aNum {
-			return false
-		}
-	}
-
-	return false
-}
-
-// 按多个指定字符分割字符串,自定义需按切割的字符存放在flagList;用法详见单元测试TestSplitByManyStrWith
+// 按多个指定字符分割字符串,自定义需按切割的字符存放在flagList
+// 用法详见单元测试TestSplitByManyStrWith
 func SplitByManyStrWith(src string, flagList []string) []string {
 	return strings.FieldsFunc(src, func(r rune) bool {
 		res := false
@@ -374,4 +298,62 @@ func SplitByManyStrWith(src string, flagList []string) []string {
 		}
 		return res
 	})
+}
+
+// 按行分割输入的内容，返回每行的实际数据长度，数据长度即行数
+func GetRowsCountByByteWrap(source []byte) (nums []int) {
+	return GetRowsCountByStringWrap(string(source))
+}
+
+// 按行分割输入的内容，返回每行的实际数据长度，数据长度即行数
+func GetRowsCountByStringWrap(source string) (nums []int) {
+	var rs []rune
+	add := func() {
+		nums = append(nums, len(rs))
+	}
+
+	r := []rune(source)
+	for i, src := range r {
+		if src == 10 {
+			add()
+			rs = []rune{}
+		} else {
+			rs = append(rs, src)
+		}
+
+		if i+1 == len(r) {
+			add()
+		}
+	}
+
+	return
+}
+
+// 按行分割输入的内容，返回每行的实际数据，数据长度即行数
+func GetRowsByByteWrap(source []byte) (afterWrapContent []string) {
+	return GetRowsByStringWrap(string(source))
+}
+
+// 按行分割输入的内容，返回每行的实际数据，数据长度即行数
+func GetRowsByStringWrap(source string) (afterWrapContent []string) {
+	var rs []rune
+	add := func() {
+		afterWrapContent = append(afterWrapContent, string(rs))
+	}
+
+	r := []rune(source)
+	for i, src := range r {
+		if src == 10 {
+			add()
+			rs = []rune{}
+		} else {
+			rs = append(rs, src)
+		}
+
+		if i+1 == len(r) {
+			add()
+		}
+	}
+
+	return
 }

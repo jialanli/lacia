@@ -18,7 +18,7 @@ func TestGetValTypeOf(t *testing.T) {
 	fmt.Println(GetValTypeOf(func() {}))            // func()
 	fmt.Println(GetValTypeOf(func(int, string) {})) // func(int, string)
 	fmt.Println(GetValTypeOf(func(string) {}))      // func(string)
-	fmt.Println(GetValTypeOf(FuncTest))             // func(string, int) ([]int, error)
+	fmt.Println(GetValTypeOf(FuncTest))             // func(string, int) ([]int, concia)
 
 	ch1 := make(chan int)
 	var ch2 chan string

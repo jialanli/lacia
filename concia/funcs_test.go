@@ -26,8 +26,8 @@ type TestObj struct {
 }
 
 const (
-	file1 = "./error/t1.txt"
-	file2 = "./error/t2.txt"
+	file1 = "../src_file/t1.txt"
+	file2 = "../src_file/t2.txt"
 )
 
 // eg1

@@ -1,6 +1,74 @@
 package lacia
 
-// 排序:sortBy传空时默认按降序,传asc时按升序
+// 判断[]中是否存在某元素,存在则返回出现该元素的所有索引列表,不存在则返回indexList[0]=-1
+// str为要判定是否存在的元素,onlyExists为只需判断存在标志位，若onlyExists=true,则判断到存在num时即返回(indexList[0]不为-1)，否则持续判断收集出现该元素的所有索引列表
+// 传false时也相当于统计str在list中出现的次数
+func ExistsInListString(list []string, str string, onlyExists bool) (indexList []int) {
+	if len(list) <= 0 {
+		return nil
+	}
+	x, y := 0, len(list)-1
+	func(arr []string, element string) {
+		for y-x >= 0 {
+			if element == list[x] {
+				indexList = append(indexList, x)
+				if onlyExists || x == y {
+					return
+				}
+			}
+			x++
+			if element == list[y] {
+				indexList = append(indexList, y)
+				if onlyExists {
+					return
+				}
+			}
+			y--
+		}
+
+		if len(indexList) < 1 {
+			indexList = make([]int, 1)
+			indexList[0] = -1
+		}
+		return
+	}(list, str)
+	return
+}
+
+// 判断[]中是否存在某元素,存在则返回出现该元素的所有索引列表,不存在则返回indexList[0]=-1
+// num为要判定是否存在的元素,onlyExists为只需判断存在标志位，若onlyExists=true,则判断到存在num时即返回(indexList[0]不为-1)，否则持续判断收集出现该元素的所有索引列表
+func ExistsInListInt(list []int, num int, onlyExists bool) (indexList []int) {
+	if len(list) <= 0 {
+		return nil
+	}
+	x, y := 0, len(list)-1
+	func(arr []int, element int) {
+		for y-x >= 0 {
+			if element == list[x] {
+				indexList = append(indexList, x)
+				if onlyExists || x == y {
+					return
+				}
+			}
+			x++
+			if element == list[y] {
+				indexList = append(indexList, y)
+				if onlyExists {
+					return
+				}
+			}
+			y--
+		}
+
+		if len(indexList) < 1 {
+			indexList = make([]int, 1)
+			indexList[0] = -1
+		}
+		return
+	}(list, num)
+	return
+}
+
 func SortArrAsc(arr []int) []int {
 	if len(arr) <= 1 {
 		return arr
@@ -140,75 +208,6 @@ func ExistsInSortList(list []int, num int) (index int) {
 		index = -1
 		return
 	}(list, 0, len(list)-1, num)
-	return
-}
-
-// 判断[]中是否存在某元素,存在则返回出现该元素的所有索引列表,不存在则返回indexList[0]=-1
-// str为要判定是否存在的元素,onlyExists为只需判断存在标志位，若onlyExists=true,则判断到存在num时即返回(indexList[0]不为-1)，否则持续判断收集出现该元素的所有索引列表
-// 传false时也相当于统计str在list中出现的次数
-func ExistsInListString(list []string, str string, onlyExists bool) (indexList []int) {
-	if len(list) <= 0 {
-		return nil
-	}
-	x, y := 0, len(list)-1
-	func(arr []string, element string) {
-		for y-x >= 0 {
-			if element == list[x] {
-				indexList = append(indexList, x)
-				if onlyExists || x == y {
-					return
-				}
-			}
-			x++
-			if element == list[y] {
-				indexList = append(indexList, y)
-				if onlyExists {
-					return
-				}
-			}
-			y--
-		}
-
-		if len(indexList) < 1 {
-			indexList = make([]int, 1)
-			indexList[0] = -1
-		}
-		return
-	}(list, str)
-	return
-}
-
-// 判断[]中是否存在某元素,存在则返回出现该元素的所有索引列表,不存在则返回indexList[0]=-1
-// num为要判定是否存在的元素,onlyExists为只需判断存在标志位，若onlyExists=true,则判断到存在num时即返回(indexList[0]不为-1)，否则持续判断收集出现该元素的所有索引列表
-func ExistsInListInt(list []int, num int, onlyExists bool) (indexList []int) {
-	if len(list) <= 0 {
-		return nil
-	}
-	x, y := 0, len(list)-1
-	func(arr []int, element int) {
-		for y-x >= 0 {
-			if element == list[x] {
-				indexList = append(indexList, x)
-				if onlyExists || x == y {
-					return
-				}
-			}
-			x++
-			if element == list[y] {
-				indexList = append(indexList, y)
-				if onlyExists {
-					return
-				}
-			}
-			y--
-		}
-
-		if len(indexList) < 1 {
-			indexList = make([]int, 1)
-			indexList[0] = -1
-		}
-		return
-	}(list, num)
 	return
 }
 

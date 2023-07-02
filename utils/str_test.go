@@ -2,6 +2,7 @@ package lacia
 
 import (
 	"fmt"
+	"io/ioutil"
 	"testing"
 )
 
@@ -25,9 +26,9 @@ func TestRemoveX(t *testing.T) {
 	fmt.Println(res) // abcscsc...
 
 	var r1 = `{`
-	var x1 = `abs.{{ff,{qp{vf`
+	var x1 = `concia.{{ff,{qp{vf`
 	res1 := RemoveX(x1, r1)
-	fmt.Println(res1) // abs.ff,qpvf
+	fmt.Println(res1) // concia.ff,qpvf
 
 	var r2 = `-`
 	var x2 = `h-e---ll--o`
@@ -118,6 +119,54 @@ func TestVersionGreaterThanT(t *testing.T) {
 	fmt.Println(flag5) // true
 	flag6 := CompareVersion("v.1.7.105", "v.1.7.115")
 	fmt.Println(flag6) // false
+}
+
+var (
+	bs1Path = "..\\src_file\\bs_1.csv"
+	bs2Path = "..\\src_file\\bs_2.csv"
+	bs3Path = "..\\src_file\\bs_3.csv"
+)
+
+func TestGetRowsCountByByteWrap(t *testing.T) {
+	bs1, _ := ioutil.ReadFile(bs1Path)
+	bs2, _ := ioutil.ReadFile(bs2Path)
+	bs3, _ := ioutil.ReadFile(bs3Path)
+
+	t.Log("-----> start bs1")
+	nums1 := GetRowsCountByByteWrap(bs1)
+	t.Log(nums1)      // [10 0 17 18]
+	t.Log(len(nums1)) // 4
+
+	t.Log("-----> start bs2")
+	nums2 := GetRowsCountByByteWrap(bs2)
+	t.Log(nums2)      // [0 10 0 17 18 0]
+	t.Log(len(nums2)) // 6
+
+	t.Log("-----> start bs3")
+	nums3 := GetRowsCountByByteWrap(bs3)
+	t.Log(nums3)      // [0 10 0 17 0 18 0 0]
+	t.Log(len(nums3)) // 8
+}
+
+func TestGetRowsByByteWrap(t *testing.T) {
+	bs1, _ := ioutil.ReadFile(bs1Path)
+	bs2, _ := ioutil.ReadFile(bs2Path)
+	bs3, _ := ioutil.ReadFile(bs3Path)
+
+	t.Log("-----> start bs1")
+	nums1 := GetRowsByByteWrap(bs1)
+	t.Log(nums1)      // [10 0 17 18]
+	t.Log(len(nums1)) // 4
+
+	t.Log("-----> start bs2")
+	nums2 := GetRowsByByteWrap(bs2)
+	t.Log(nums2)      // [0 10 0 17 18 0]
+	t.Log(len(nums2)) // 6
+
+	t.Log("-----> start bs3")
+	nums3 := GetRowsByByteWrap(bs3)
+	t.Log(nums3)      // [0 10 0 17 0 18 0 0]
+	t.Log(len(nums3)) // 8
 }
 
 func TestSplitByManyStrWith(t *testing.T) {

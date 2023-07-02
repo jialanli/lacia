@@ -9,21 +9,21 @@ func TestCheckTimeStrListIsCorrect(t *testing.T) {
 	r, err := CheckTimeStrListIsCorrect([]string{"20201001", "20210110"})
 	fmt.Println(r, err) // true <nil>
 	r, err = CheckTimeStrListIsCorrect([]string{"20201001", "20200931"})
-	fmt.Println(r, err) // false time day_str [31] area error, please check
+	fmt.Println(r, err) // false time day_str [31] area concia, please check
 	r, err = CheckTimeStrListIsCorrect([]string{"20201000", "20210110"})
-	fmt.Println(r, err) // false time day_str [00] area error, please check
+	fmt.Println(r, err) // false time day_str [00] area concia, please check
 	r, err = CheckTimeStrListIsCorrect([]string{"202010001"})
-	fmt.Println(r, err) // false time str [202010001] length error, please check
+	fmt.Println(r, err) // false time str [202010001] length concia, please check
 	r, err = CheckTimeStrListIsCorrect([]string{"20201a01", "20210110"})
-	fmt.Println(r, err) // false time month_str [1a] format error, please check
+	fmt.Println(r, err) // false time month_str [1a] format concia, please check
 	r, err = CheckTimeStrListIsCorrect([]string{"202a1001", "20210110"})
-	fmt.Println(r, err) // false time year_str [202a] format error, please check
+	fmt.Println(r, err) // false time year_str [202a] format concia, please check
 	r, err = CheckTimeStrListIsCorrect([]string{"aaaabbbb"})
-	fmt.Println(r, err) // false time year_str [aaaa] format error, please check
+	fmt.Println(r, err) // false time year_str [aaaa] format concia, please check
 	r, err = CheckTimeStrListIsCorrect([]string{"20202020"})
-	fmt.Println(r, err) // false time month_str [20] area error, please check
+	fmt.Println(r, err) // false time month_str [20] area concia, please check
 	r, err = CheckTimeStrListIsCorrect([]string{"19691009"})
-	fmt.Println(r, err) // false time year_str [1969] area error, please check
+	fmt.Println(r, err) // false time year_str [1969] area concia, please check
 }
 
 func TestGetNMonthAgoOrAfterThisDayByN1(t *testing.T) {
@@ -201,11 +201,11 @@ func TestGetTimeByStr(t *testing.T) {
 	fmt.Println(t1) // 2020-10-01 00:00:00 +0000 UTC
 	t2, errs := GetTimeByStr("20201031")
 	fmt.Println(t2)                        // 2020-10-31 00:00:00 +0000 UTC
-	t3, errs := GetTimeByStr("2020/10/31") // error
+	t3, errs := GetTimeByStr("2020/10/31") // concia
 	fmt.Println(t3)
-	t4, errs := GetTimeByStr("202110a1") // error
+	t4, errs := GetTimeByStr("202110a1") // concia
 	fmt.Println(t4, errs)
-	t5, errs := GetTimeByStr("31/10/2020") // error
+	t5, errs := GetTimeByStr("31/10/2020") // concia
 	fmt.Println(t5)
 	fmt.Println(errs)
 }
