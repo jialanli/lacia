@@ -4,7 +4,7 @@ import (
 	"reflect"
 )
 
-func CopyStructByFieldGraceful(from, to any) {
+func CopyStructByFieldGraceful(from, to interface{}) {
 	toValue, fromValue := reflect.ValueOf(to), reflect.ValueOf(from)
 
 	if fromValue.Kind() != reflect.Ptr || toValue.Kind() != reflect.Ptr {
@@ -23,7 +23,7 @@ func CopyStructByFieldGraceful(from, to any) {
 	return
 }
 
-func CopyStructByTagGraceful(from, to any) {
+func CopyStructByTagGraceful(from, to interface{}) {
 	toValue, fromValue := reflect.ValueOf(to), reflect.ValueOf(from)
 
 	if fromValue.Kind() != reflect.Ptr || toValue.Kind() != reflect.Ptr {
@@ -46,7 +46,7 @@ func CopyStructByTagGraceful(from, to any) {
 	return
 }
 
-func CopyStructByCustomTagGraceful(from, to any, customTag string) {
+func CopyStructByCustomTagGraceful(from, to interface{}, customTag string) {
 	toValue, fromValue := reflect.ValueOf(to), reflect.ValueOf(from)
 
 	if fromValue.Kind() != reflect.Ptr || toValue.Kind() != reflect.Ptr {
