@@ -56,13 +56,13 @@ func CopyStructByCustomTagGraceful(from, to any, customTag string) {
 	toElem, fromElem := toValue.Elem(), fromValue.Elem()
 
 	for i := 0; i < toElem.NumField(); i++ {
-		toTag, toFieldType := toElem.Type().Field(i).Tag, toElem.Type().Field(i).Type
+		toTag, toFieldType := toElem.Type().Field(i).Tag.Get(customTag), toElem.Type().Field(i).Type
 		if len(toTag) == 0 {
 			continue
 		}
 
 		for j := 0; j < fromElem.NumField(); j++ {
-			fromTag, fromFieldType := fromElem.Type().Field(j).Tag, fromElem.Type().Field(j).Type
+			fromTag, fromFieldType := fromElem.Type().Field(j).Tag.Get(customTag), fromElem.Type().Field(j).Type
 			if len(fromTag) == 0 {
 				continue
 			}
