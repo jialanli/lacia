@@ -3,49 +3,29 @@ package lacia
 import (
 	"errors"
 	"fmt"
+	"log"
 	"strconv"
 	"strings"
 	"time"
 )
 
 /*
-********************功能概览********************
-GetPreferTimeByTimeStrAndDifference(timeStr string, y, m, d int)    获取指定日期之前/之后的日期
-GetTimeByStr(timeStr string)          								日期字符串转日期
-GetTimeByTimeStrByTemplate(timeStr string, timeTemplate string)     日期字符串转日期
-GetTsByTimeStr(timeStr string)        								日期字符串转时间戳
-GetTsByTimeStrByTemplate(timeStr string, timeTemplate string)       日期字符串转时间戳
-GetTimeByTs(ts int64)                 								时间戳转日期
-GetTimeByTsByTemplate(ts int64, timeTemplate string)    			时间戳转日期
-GetPreDayTimeStampByNow()             								获取当前时间前一天的秒级时间戳
-GetTimeStrOfDayByTs(ts int64)         								时间戳转对应日期字符串
-GetTimeStrOfDayZeroByTs(ts int64)    								时间戳转对应日期零时字符串
-GetTimeStrOfDayTimeByTs(ts int64)    								时间戳转对应日期的实际时间
-GetTimeStrOfDifferenceDayByTs(ts int64,n int)   					时间戳转n日前/后的实际日时间
-GetTimeStrOfDifferenceDayZeroByTs(ts int64,n int)  					时间戳转n日前/后的零时时间
-GetTimeStrOfDifferenceDayTimeByTs(ts int64,n int)  					时间戳转n日前/后的实际时间
-GetDaysInMonth(yearInt, month int)   给定年月值获取该月有多少天
-GetNMonthAgoOrAfterThisDayByN(thisT *time.Time, thisTStr string, n int)   给定一个日期或日期字符串，返回n月前/后的当天日期
-GetAllDaysStrByMonths(startMonthT, endMonthT string, ifDelayOneDay bool)  给定两个月份，获取期间的所有天粒度的字符串列表（支持获取整体延后一天的时间列表）
-GetTimeListByTwoDayStr(startT, endT string, ifDelayOneDay bool)   		  给定一个时间区间，根据传入的时间精确到月/天，用于获取该区间内所有的天粒度/月粒度的时间字符串列表
-CheckTimeStrListIsCorrect(strList []string)                               检查一批日期字符串是否是正常日期
-GetTimeListByTwoDayStr2(startT, endT string, ifDelayOneDay bool)          旧版。建议使用替代函数GetTimeListByTwoDayStr或GetAllDaysStrByMonths，功能同上述两函数
-GetDaysNumByTwoDays(yearInt, startMonthInt, startDayInt, endMonthInt, endDayInt int)       输入两个YYYYMMDD日期,返回期间的天数总长度
-GetYearMonthListByTwoDay(inputStart, inputEnd string)   			      给定两个YYYYMM或YYYYMMDD日期,返回期间的月份列表数组
-GetYearMonthListByTwoDayDelayOneDay(inputStart, inputEnd string)          给定两个YYYYMM或YYYYMMDD日期,返回期间的月份列表数组(整体顺延一月)
-IsJumpMonth(yearInt int, monthInt int, dayAdd int)                        以给定的年月日判断dayAdd+1后是否到了下月
-IsNum(s string)   判断一个字符串是否是纯数字
-ConvertTime2Str(inputTime string, isStart bool)                            时间转换方法：转换时间20200504为"2020-05-04 00:00:00"格式
+日期格式转换（本日、前后n日）、日期计算、
 */
 
 var CstZone = time.FixedZone("CST", 8*3600)
-var TimeTemplate1 = "2006-01-02 15:04:05"
-var TimeTemplate2 = "2006/01/02 15:04:05"
-var TimeTemplate3 = "2006-01-02"
-var TimeTemplate5 = "20060102 150405"
-var TimeTemplate6 = "20060102"
 
-// ***************************日期转换-->当日start***************************
+var (
+	TimeTemplate1 = "2006-01-02 15:04:05"
+	TimeTemplate2 = "2006/01/02 15:04:05"
+	TimeTemplate3 = "2006-01-02"
+	TimeTemplate5 = "20060102 150405"
+	TimeTemplate6 = "20060102"
+	TimeTemplate7 = "2006/01/02"
+)
+
+// ***************************日期转换-->当日 start***************************
+
 // 获取指定日期之前/之后的日期  timeStr格式:YYYYMMDD
 // y,m,d可为正数或负数  如d=1则获取timeStr的一天之后的日期，如d=-1则获取timeStr的前一天的日期
 func GetPreferTimeByTimeStrAndDifference(timeStr string, y, m, d int) (time.Time, error) {
@@ -56,7 +36,7 @@ func GetPreferTimeByTimeStrAndDifference(timeStr string, y, m, d int) (time.Time
 	return thisT.AddDate(y, m, d), nil
 }
 
-// 日期字符串转日期  输入格式支持YYYYMMDD、YYYY-MM-DD之一,如20201001、2020-10-01
+// 日期字符串转日期  输入格式支持YYYYMMDD、YYYY-MM-DD之一,如20181001、2018-10-01
 func GetTimeByStr(timeStr string) (time.Time, error) {
 	timeStr = DeletePreAndSufSpace(timeStr)
 	if !strings.Contains(timeStr, "-") {
@@ -84,21 +64,11 @@ func GetTimeByTs(ts int64) time.Time {
 	return time.Unix(ts, 0)
 }
 
-/*
-日期字符串转时间戳
-timeTemplate:日期模板，可选TimeTemplate1, TimeTemplate2, TimeTemplate3, TimeTemplate5, TimeTemplate6之一，对应如下：
-	var TimeTemplate1 = "2006-01-02 15:04:05"
-	var TimeTemplate2 = "2006/01/02 15:04:05"
-	var TimeTemplate3 = "2006-01-02"
-	var TimeTemplate5 = "20060102 150405"
-	var TimeTemplate6 = "20060102"
-*/
-
 // 日期字符串转时间戳
-func GetTsByTimeStrByTemplate(timeStr, timeTemplate string) (int64, error) { // 2021-07-09T16:20:00Z
+func GetTsByTimeStrByTemplate(timeStr, timeTemplate string) (int64, error) { // 2018-07-09T16:20:00Z
 	if ExistsInListString([]string{TimeTemplate1, TimeTemplate2, TimeTemplate3,
-		TimeTemplate5, TimeTemplate6}, timeTemplate, true)[0] == -1 {
-		return -1, errors.New("concia layout,please check")
+		TimeTemplate5, TimeTemplate6, TimeTemplate7}, timeTemplate, true)[0] == -1 {
+		return -1, errors.New("error layout, please check")
 	}
 	thisT, err := time.ParseInLocation(timeTemplate, timeStr, time.Local)
 	if err != nil {
@@ -108,10 +78,10 @@ func GetTsByTimeStrByTemplate(timeStr, timeTemplate string) (int64, error) { // 
 }
 
 // 日期字符串转日期
-func GetTimeByTimeStrByTemplate(timeStr, timeTemplate string) (time.Time, error) { // 2021-07-09T16:20:00Z
+func GetTimeByTimeStrByTemplate(timeStr, timeTemplate string) (time.Time, error) { // 2018-07-09T16:20:00Z
 	if ExistsInListString([]string{TimeTemplate1, TimeTemplate2, TimeTemplate3,
-		TimeTemplate5, TimeTemplate6}, timeTemplate, true)[0] == -1 {
-		return time.Time{}, errors.New("concia layout,please check")
+		TimeTemplate5, TimeTemplate6, TimeTemplate7}, timeTemplate, true)[0] == -1 {
+		return time.Time{}, errors.New("error layout,please check")
 	}
 
 	return time.ParseInLocation(timeTemplate, timeStr, time.Local)
@@ -120,7 +90,7 @@ func GetTimeByTimeStrByTemplate(timeStr, timeTemplate string) (time.Time, error)
 // 时间戳转日期
 func GetTimeByTsByTemplate(ts int64, timeTemplate string) (time.Time, error) {
 	if ExistsInListString([]string{TimeTemplate1, TimeTemplate2, TimeTemplate3,
-		TimeTemplate5, TimeTemplate6}, timeTemplate, true)[0] == -1 {
+		TimeTemplate5, TimeTemplate6, TimeTemplate7}, timeTemplate, true)[0] == -1 {
 		return time.Time{}, errors.New("concia layout,please check")
 	}
 
@@ -132,54 +102,86 @@ func GetPreDayTimeStampByNow() int64 {
 	return time.Now().In(CstZone).AddDate(0, 0, -1).Unix()
 }
 
-// 时间戳转对应日期字符串 返回格式2020-09-03
+// 时间戳转对应日期字符串 返回格式 2006-01-02
 func GetTimeStrOfDayByTs(ts int64) string {
 	curTm := time.Unix(ts, 0)
 	return curTm.In(CstZone).Format(TimeTemplate3)
 }
 
-// 时间戳转对应日期零时字符串 返回格式2020-09-03 00:00:00
+// 时间戳转对应日期字符串 自定义转出模板
+func GetTimeStrOfDayByTsAndTemplate(ts int64, template string) string {
+	curTm := time.Unix(ts, 0)
+	return curTm.In(CstZone).Format(template)
+}
+
+// 时间戳转对应日期零时字符串 返回格式 2006-01-02 00:00:00
 func GetTimeStrOfDayZeroByTs(ts int64) string {
 	curTm := time.Unix(ts, 0)
 	return curTm.In(CstZone).Format(TimeTemplate3) + " 00:00:00"
 }
 
-// 时间戳转对应日期的实际时间 返回格式2020-09-03 11:31:59
+// 时间戳转对应日期零时字符串 自定义转出模板
+func GetTimeStrOfDayZeroByTsAndTemplate(ts int64, template string) string {
+	curTm := time.Unix(ts, 0)
+	return curTm.In(CstZone).Format(template) + " 00:00:00"
+}
+
+// 当前时间的字符串 返回格式2006-01-02 11:31:59
+func GetTimeStrOfDayTimeNow() string {
+	return time.Now().In(CstZone).Format(TimeTemplate1)
+}
+
+// 时间戳转对应日期的实际时间 返回格式2006-01-02 11:31:59
 func GetTimeStrOfDayTimeByTs(ts int64) string {
 	curTm := time.Unix(ts, 0)
 	return curTm.In(CstZone).Format(TimeTemplate1)
 }
 
-// ***************************日期转换-->前一日start***************************
-// 时间戳转n日前/后指定格式的时间
+// 时间戳转对应日期的实际时间 自定义转出模板
+func GetTimeStrOfDayTimeByTsAndTemplate(ts int64, template string) string {
+	curTm := time.Unix(ts, 0)
+	return curTm.In(CstZone).Format(template)
+}
+
+// ***************************日期转换-->前一日 start***************************
+
+// 时间戳转n日前/后指定格式的时间 自定义转出模板
 func GetTimeStrAfterNDayByTs(ts int64, n int, template string) string {
 	curTm := time.Unix(ts, 0)
 	beforeDayTime := curTm.In(CstZone).AddDate(0, 0, n)
 	return beforeDayTime.In(CstZone).Format(template)
 }
 
-// 时间戳转n日前/后的实际日时间 返回格式2020-09-03
+// 时间戳转n日前/后的实际日时间 返回格式2006-01-02
 func GetTimeStrDayAfterNDayByTs(ts int64, n int) string {
 	curTm := time.Unix(ts, 0)
 	beforeDayTime := curTm.In(CstZone).AddDate(0, 0, n)
 	return beforeDayTime.In(CstZone).Format(TimeTemplate3)
 }
 
-// 时间戳转n日前/后零时时间 返回格式2020-09-03 00:00:00
+// 时间戳转n日前/后零时时间 返回格式2006-01-02 00:00:00
 func GetTimeStrAfterNDayZeroByTs(ts int64, n int) string {
 	curTm := time.Unix(ts, 0)
 	beforeDayTime := curTm.In(CstZone).AddDate(0, 0, n)
-	return beforeDayTime.In(CstZone).Format("2006-01-02") + " 00:00:00"
+	return beforeDayTime.In(CstZone).Format(TimeTemplate3) + " 00:00:00"
 }
 
-// 时间戳转n日前/后的实际时间 返回格式2020-09-03 11:31:59
+// 时间戳转n日前/后的实际时间 返回格式2006-01-02 11:31:59
 func GetTimeStrAfterNDayTimeByTs(ts int64, n int) string {
 	curTm := time.Unix(ts, 0)
 	beforeDayTime := curTm.In(CstZone).AddDate(0, 0, n)
 	return beforeDayTime.In(CstZone).Format(TimeTemplate1)
 }
 
-// ***************************日期获取&计算start***************************
+// 时间戳转n日前/后的实际时间 自定义转出模板
+func GetTimeStrAfterNDayTimeByTsAndTemplate(ts int64, n int, template string) string {
+	curTm := time.Unix(ts, 0)
+	beforeDayTime := curTm.In(CstZone).AddDate(0, 0, n)
+	return beforeDayTime.In(CstZone).Format(template)
+}
+
+// ***************************日期获取&计算 start***************************
+
 // 判断指定日期A离B是否走过了指定距离  传入时间戳
 func CalcAreaByTimeStr(tsA, tsB, step int64) bool {
 	if tsB-tsA >= step {
@@ -189,7 +191,7 @@ func CalcAreaByTimeStr(tsA, tsB, step int64) bool {
 	return false
 }
 
-//给定年月值,获取该月有多少天
+// 给定年月值,获取该月有多少天
 func GetDaysInMonth(yearInt, month int) (days int) {
 	switch month {
 	case 1, 3, 5, 7, 8, 10, 12:
@@ -225,7 +227,7 @@ func GetNMonthAgoOrAfterThisDayByN(thisT *time.Time, thisTStr string, n int) (re
 	thisYearInt, thisMonthInt, thisDayInt := 0, 0, 0
 	resYearStr, resMonthStr, resDayStr := "", "", ""
 	if thisT != nil {
-		//fmt.Println("打印：", thisT.YearDay())
+		//log.Println("打印：", thisT.YearDay())
 		thisMonth := thisT.Month()
 		thisYearInt, thisDayInt = thisT.Year(), thisT.Day()
 		thisMonthInt = int(thisMonth)
@@ -307,7 +309,6 @@ func GetNMonthAgoOrAfterThisDayByN(thisT *time.Time, thisTStr string, n int) (re
 			}
 			newMonthInt = Abs(c)
 			resMonthStr = strconv.Itoa(newMonthInt)
-			//newYearInt = thisYearInt - 1
 			resYearStr = strconv.Itoa(newYearInt)
 		} else {
 			newMonthInt = thisMonthInt + n
@@ -335,9 +336,9 @@ func GetNMonthAgoOrAfterThisDayByN(thisT *time.Time, thisTStr string, n int) (re
 
 // 给定两个月份，获取期间的所有天粒度的字符串列表
 // ifDelayOneDay为是否取延迟一天的标志位，ifDelayOneDay=true，则获取的天粒度数据全部往后推迟一天
-// 入参示例：202007 202008;或只传一个月：startT=endT=202006;返回示例请查看对应单元测试TestGetAllDaysDelayOneDayByMonths
+// 入参示例：201807 201808;或只传一个月：startT=endT=201806; 返回示例请查看对应单元测试TestGetAllDaysDelayOneDayByMonths
 func GetAllDaysStrByMonths(startMonthT, endMonthT string, ifDelayOneDay bool) ([]string, []string) {
-	preStr := startMonthT[:4]         // 2020
+	preStr := startMonthT[:4]         // 2018
 	startMonthStr := startMonthT[4:6] // 06
 	endMonthStr := endMonthT[4:6]     // 07
 	yearInt, _ := strconv.Atoi(preStr)
@@ -358,9 +359,9 @@ func GetAllDaysStrByMonths(startMonthT, endMonthT string, ifDelayOneDay bool) ([
 
 // 给定一个时间区间，根据传入的时间精确到月/天，用于获取该区间内所有的天粒度/月粒度的时间字符串列表
 // ifDelayOneDay为是否取延迟一天的标志位，ifDelayOneDay=true，则获取的天粒度数据全部往后推迟一天
-// eg:想获取20200807、20200808、20200809三天的天粒度字符串，输入20200807 20200809，则返回为[]string{20200808,20200809,20200810}
-// eg:想获取20200730、20200731、20200801三天的天粒度字符串，输入20200730 20200801，则返回为[]string{20200731,20200801,20200802}
-// eg:想获取2020年6月、2020年7月 两月的月粒度字符串，输入202007 202008，则返回为[]string{202008,202009}
+// eg:获取20180807、20180808、20180809三天的天粒度字符串，输入20180807 20180809，则返回[]string{20180808,20180809,20180810}
+// eg:获取20180730、20180731、20180801三天的天粒度字符串，输入20180730 20180801，则返回[]string{20180731,20180801,20180802}
+// eg:获取2018年6月、2018年7月 两月的月粒度字符串，输入201807 201808，则返回[]string{201808,201809}
 func GetTimeListByTwoDayStr(startT, endT string, ifDelayOneDay bool) (timeList, timeListNoUnderline []string) {
 	if startT == endT { // not allow one day
 		return
@@ -384,7 +385,7 @@ func GetTimeListByTwoDayStr(startT, endT string, ifDelayOneDay bool) (timeList, 
 		}
 		currentT, err := GetPreferTimeByTimeStrAndDifference(nextT, 0, 0, 1)
 		if err != nil {
-			fmt.Println("GetPreferTimeByTimeStrAndDifference concia:", err.Error())
+			log.Println("GetPreferTimeByTimeStrAndDifference concia:", err.Error())
 			timeListNoUnderline2 := GetTimeListByTwoDayStr2(nextT, endT, ifDelayOneDay)
 			timeListNoUnderline = append(timeListNoUnderline, timeListNoUnderline2...)
 			return
@@ -408,8 +409,8 @@ func GetTimeListByTwoDayStr(startT, endT string, ifDelayOneDay bool) (timeList, 
 	return
 }
 
-// 检查一批日期字符串是否是正常日期
-// eg: 20201001 return true,  20201131 return false, 20201331 return false
+// 检查一批无符号日期字符串是否是正常日期
+// eg: 20181001 return true,  20181131 return false, 20181331 return false
 func CheckTimeStrListIsCorrect(strList []string) (bool, error) {
 	for _, thisTStr := range strList {
 		if len(thisTStr) != 8 {
@@ -456,7 +457,7 @@ func GetTimeListByTwoDayStr2(startT, endT string, ifDelayOneDay bool) (timeList 
 	count := len(startT)
 	switch count {
 	case 8: // 日
-		preStr := startT[:4]         // 2020
+		preStr := startT[:4]         // 2018
 		startMonthStr := startT[4:6] // 08
 		endMonthStr := endT[4:6]     // 08
 		startDayStr := startT[6:]    // 07
@@ -493,8 +494,8 @@ func GetTimeListByTwoDayStr2(startT, endT string, ifDelayOneDay bool) (timeList 
 
 		return
 
-	case 6: // 月,202006、202007
-		preStr := startT[:4]         // 2020
+	case 6: // 月,201806、201807
+		preStr := startT[:4]         // 2018
 		startMonthStr := startT[4:6] // 06
 		endMonthStr := endT[4:6]     // 07
 		yearInt, _ := strconv.Atoi(preStr)
@@ -508,18 +509,18 @@ func GetTimeListByTwoDayStr2(startT, endT string, ifDelayOneDay bool) (timeList 
 			currentMonthDays = GetDaysInMonth(yearInt, endMonthInt)
 			startStr, endStr = preStr+startMonthStr+"01", preStr+endMonthStr+strconv.Itoa(currentMonthDays)
 		}
-		fmt.Println("转换后的8位str：", startStr, endStr)
+		log.Println("转换后的8位str：", startStr, endStr)
 		GetTimeListByTwoDayStr2(startStr, endStr, ifDelayOneDay)
 		return
 	case 4:
-		fmt.Println("暂不支持以年查询！")
+		log.Println("暂不支持以年为单位查询！")
 		return
 	}
 
 	return
 }
 
-// 输入两个YYYYMMDD日期,返回期间的天数总长度，如传入20200730，20200801，则返回3; 如传入20200630，20200801，则返回33
+// 输入两个YYYYMMDD日期,返回期间的天数总长度，如传入20180730，20180801，则返回3; 如传入20180630，20180801，则返回33
 func GetDaysNumByTwoDays(yearInt, startMonthInt, startDayInt, endMonthInt, endDayInt int) (days int) {
 	if startMonthInt == endMonthInt { // 当月
 		days = endDayInt - startDayInt + 1
@@ -542,7 +543,7 @@ func GetDaysNumByTwoDays(yearInt, startMonthInt, startDayInt, endMonthInt, endDa
 }
 
 // 给定两个YYYYMM或YYYYMMDD日期,返回期间的月份列表数组(无顺延);
-// 输入20200101 20200303 返回月份列表数组string{202001,202002,202003}
+// 输入20180101 20180303 返回月份列表数组string{201801,201802,201803}
 func GetYearMonthListByTwoDay(inputStart, inputEnd string) []string {
 	year := inputStart[:4] // 年月inputStart[:6]  月inputStart[4:6]
 	yearMon := inputStart[:6]
@@ -571,13 +572,12 @@ func GetYearMonthListByTwoDay(inputStart, inputEnd string) []string {
 }
 
 // 给定两个YYYYMM或YYYYMMDD日期,返回期间的月份列表数组(整体顺延一月);
-// 输入20200101 20200303 返回string{202002,202003,202004}
-// 输入20200101 20200303 返回string{202002,202003,202004}
-// 输入202008 202008 返回string{202009}
-// 输入20200705 20200708 返回string{202008}
-// 输入20200705 20200808 返回string{202008,202009}
+// 输入20180101 20180303 返回string{201802,201803,201804}
+// 输入201808 201808 返回string{201809}
+// 输入20180705 20180708 返回string{201808}
+// 输入20180705 20180808 返回string{201808,201809}
 func GetYearMonthListByTwoDayDelayOneDay(inputStart, inputEnd string) []string {
-	year := inputStart[:4] // 2020
+	year := inputStart[:4] // 2018
 	yearMon := inputStart[:6]
 	startMon := inputStart[4:6]
 	endMon := inputEnd[4:6]
@@ -622,10 +622,10 @@ func IsNum(s string) bool {
 	return err == nil
 }
 
-//时间转换方法：转换时间20200504为"2020-05-04 00:00:00"格式
+// 时间转换方法：转换时间20180504为"2018-05-04 00:00:00"格式
 func ConvertTime2Str(inputTime string, isStart bool) (resTime string, err error) {
 	if len(inputTime) != 6 && len(inputTime) != 8 {
-		fmt.Println("时间参数长度不合法！")
+		log.Println("时间参数长度不合法！")
 		err = errors.New("时间参数长度不合法！")
 		return
 	}
@@ -639,7 +639,7 @@ func ConvertTime2Str(inputTime string, isStart bool) (resTime string, err error)
 		if isStart {
 			resTime = inputTime[:4] + "-" + inputTime[4:6] + "-01 00:00:00" // 以1号开始
 		} else {
-			yearStr := inputTime[:4]   // 2020
+			yearStr := inputTime[:4]   // 2018
 			monthStr := inputTime[4:6] // 06
 			yearInt, _ := strconv.Atoi(yearStr)
 			monthInt, _ := strconv.Atoi(monthStr)

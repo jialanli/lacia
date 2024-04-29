@@ -1,2 +1,5 @@
+.idea
 .idea/
-/idea/
+*.iml
+.vscode
+_debug

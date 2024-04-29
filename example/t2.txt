@@ -1,1 +1,2 @@
 write hello 2 file!
+write hello 2 file!

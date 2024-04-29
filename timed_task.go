@@ -43,7 +43,7 @@ func (tl *TimedLan) StartTimedLan() {
 			tl.Snap.NextTime = tl.Snap.CurTime + tl.Step
 		}
 		if tl.Snap.NextTime <= time.Now().Unix() {
-			//fmt.Println( tl.Snap.NextTime,  time.Now().Unix())
+			//log.Println( tl.Snap.NextTime,  time.Now().Unix())
 			tl.C <- &TimeSnap{CurTime: tl.Snap.CurTime, NextTime: tl.Snap.NextTime + tl.Step}
 			tl.Snap.CurTime, tl.Snap.NextTime = tl.Snap.NextTime, tl.Snap.NextTime+tl.Step
 		}

@@ -1,7 +1,6 @@
 package lacia
 
 import (
-	"fmt"
 	"os"
 	"strconv"
 	"testing"
@@ -26,20 +25,20 @@ type TestObj struct {
 }
 
 const (
-	file1 = "../src_file/t1.txt"
-	file2 = "../src_file/t2.txt"
+	file1 = "../example/t1.txt"
+	file2 = "../example/t2.txt"
 )
 
 // eg1
 func TestCConcurrencyGos(t *testing.T) {
 	err := addContent(file1, file2, "write hello 2 file!")
-	fmt.Println(err)
+	log.Println(err)
 }
 
 // eg2
 func TestCConcurrencyGos0(t *testing.T) {
 	err := fc00()
-	fmt.Println(err) // 无报错时<nil>     下设人造错误时：fc01执行异常 结果B1A2B3A4B5A6B7A8B9A10B11
+	log.Println(err) // 无报错时<nil>     下设人造错误时：fc01执行异常 结果B1A2B3A4B5A6B7A8B9A10B11
 }
 
 func fc00() error {
@@ -95,7 +94,7 @@ fc3Lp:
 			str += data.A + strconv.Itoa(data.B)
 		}
 	}
-	fmt.Println(str)
+	log.Println(str)
 	return writeTo(file1, str)
 }
 
@@ -111,7 +110,7 @@ func writeTo(fileName, content string) error {
 	}
 	defer dstFile.Close()
 	dstFile.WriteString(content + "\n")
-	//fmt.Println("写入完成：", fileName)
+	//log.Println("写入完成：", fileName)
 	return nil
 }
 

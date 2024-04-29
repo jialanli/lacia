@@ -1,29 +1,29 @@
 package lacia
 
 import (
-	"fmt"
+	"log"
 	"sync"
 	"testing"
 	"time"
 )
 
 func TestReverseInt(t *testing.T) {
-	fmt.Println(ReverseInt(123))  // 321
-	fmt.Println(ReverseInt(-123)) // -321
-	fmt.Println(ReverseInt(210))  // 12
+	log.Println(ReverseInt(123))  // 321
+	log.Println(ReverseInt(-123)) // -321
+	log.Println(ReverseInt(210))  // 12
 }
 
 func TestSwapValString(t *testing.T) {
 	a, b := 1, 3
 	SwapValInt(&a, &b)
-	fmt.Println(a, b)
+	log.Println(a, b)
 	c, d := "C", "D"
 	SwapValString(&c, &d)
-	fmt.Println(c, d)
+	log.Println(c, d)
 
 	var e, f int64 = 11, 3
 	SwapValInt64(&e, &f)
-	fmt.Println(e, f)
+	log.Println(e, f)
 }
 
 type R int
@@ -31,10 +31,10 @@ type R int
 func TestSw(t *testing.T) {
 	a := 5
 	b := R(2)
-	fmt.Println(GetValTypeOf(a))
-	fmt.Println(GetValTypeOf(b))
+	log.Println(GetValTypeOf(a))
+	log.Println(GetValTypeOf(b))
 	c := a + int(b)
-	fmt.Println(c)
+	log.Println(c)
 
 }
 
@@ -58,7 +58,7 @@ func TestA(t *testing.T) {
 
 	time.Sleep(time.Second * 3)
 	m.Range(func(key, value interface{}) bool {
-		fmt.Println(key, value)
+		log.Println(key, value)
 		return true
 	})
 }

@@ -19,19 +19,19 @@ func Abs(n int) int {
 	return n
 }
 
-// rate = a-b/b
-func CalcRateInt64(src, dst int64) float64 {
-	if dst == 0 {
+// growth rate
+func CalcRateInt64(thisCycle, previousCycle int64) float64 {
+	if previousCycle == 0 {
 		return -1
 	}
-	return float64(src-dst) / float64(dst)
+	return float64(thisCycle-previousCycle) / float64(previousCycle)
 }
 
-func CalcRateFloat64(src, dst float64) float64 {
-	if int(dst) == 0 {
+func CalcRateFloat64(thisCycle, previousCycle float64) float64 {
+	if int(previousCycle) == 0 {
 		return -1
 	}
-	return (src - dst) / dst
+	return (thisCycle - previousCycle) / previousCycle
 }
 
 func ReverseInt(x int) int {
