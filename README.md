@@ -1,42 +1,30 @@
-# 静海
-by jialanli 持续更新中...
+# QuietSea
 
-so surprise！
+![b29db831629951f88ff525a0e8b2a56](https://github.com/jialanli/lacia/assets/76472970/e6495870-bf95-4ba2-9812-c18a3ba84ce4)
 
-致力于打造快速、便捷的通用工具库
-常用高频功能、其它功能直接开箱使用
+# About it
 
--->欢迎提出问题或建议，持续改进和补充
+Simple, convenient, and friendly.
 
-go get -u "github.com/jialanli/lacia/utils"
+# Quick use
+
+    require github.com/jialanli/lacia v1.0.1
 
 or
 
-cd ~/go/src/github.com
-git clone https://github.com/jialanli/lacia.git
+    go get -u github.com/jialanli/lacia@v1.0.1
 
-## 内容介绍
+## Example
 
-eg：需要按多个分隔符切割字符串：
+eg: cutting strings by multiple delimiters
 
-姿势1：    
-
-    lacia.SplitByManyStr("ab+c*de+f/gh")
-
-姿势2：
-
-    lacia.SplitByManyStrWith("ab+c*de+f/gh", []string{`*`, `+`, `/`}))   
-参数2为指定的要去除的自定义字符集合, []string , 非常便捷,按需使用即可~
-
-eg：获取参数2出现次数、判断参数1中是否含有参数2等：
-
-    if lacia.ExistsInListInt([]int{0, 1, 2}, 5) == -1 {}
-
-    ...多用途方式详见单元测试
-
-各功能均有明确说明，使用效果也可见对应文件的单元测试呦!
+    lacia.SplitByManyStrWith("ab+c*de+f/gh", []string{`*`, `+`, `/`}))
 
 
-持续改进和更新！
+eg: unzip file
 
-一直在路上，随时补充中...期待新功能发布！
+    lacia.Unzip(zipFile, unzipDir, false)
+
+eg: count the number of files in the directory
+
+    lacia.FilesCountAndFiles(dirPath, true)
